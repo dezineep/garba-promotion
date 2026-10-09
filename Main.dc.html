@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rent a Garba Partner</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Instrument+Serif:ital@1&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FFB81C}a:hover{color:#FFD36B}
+button,a,input{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #FFB81C;outline-offset:3px}
+.gridbg{background-image:linear-gradient(rgba(255,241,220,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,241,220,.06) 1px,transparent 1px);background-size:39px 39px;background-position:0 -1px}
+.ser{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:1.18em;letter-spacing:0}
+.pbtn{transition:transform .12s,box-shadow .12s;cursor:pointer}
+.pbtn:active{transform:translate(3px,3px);box-shadow:0 0 0 transparent!important}
+.scr{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.px{shape-rendering:crispEdges;overflow:visible}
+.px g,.px .eye{transform-box:fill-box}
+.stL,.stR{transform-origin:50% 100%}
+.eye{transform-origin:50% 50%;animation:blink 3.6s infinite}
+.lgA,.lgB{transform-origin:50% 0}
+.stage.dance .chr{animation:bob .64s ease-in-out infinite}
+.stage.dance .late{animation-delay:-.32s}
+.stage.dance .stL{animation:stA .64s ease-in-out infinite}
+.stage.dance .stR{animation:stB .64s ease-in-out infinite}
+.stage.dance .lgA{animation:lgA .64s steps(2) infinite}
+.stage.dance .lgB{animation:lgB .64s steps(2) infinite}
+.stage.idle .chr{animation:sway 2.4s ease-in-out infinite}
+.stage.idle .late{animation-delay:-1.2s}
+.stage.idle .stR{animation:stB 2.4s ease-in-out infinite}
+.stage.wave .chr{animation:hop 1.2s ease-in-out infinite}
+.stage.wave .late{animation-delay:-.6s}
+.stage.wave .stR{animation:wave .9s ease-in-out infinite}
+.stage.sad .chr{animation:sway 3.2s ease-in-out infinite}
+.stage.sad .stR{animation:wave 1.4s ease-in-out infinite}
+.beat{animation:beat 1.1s ease-in-out infinite}
+.fh{animation:heartUp 2.6s ease-out infinite;opacity:0}
+.fh2{animation-delay:.9s}.fh3{animation-delay:1.7s}
+.lite{animation:twinkle 1.8s ease-in-out infinite}
+.lite:nth-child(2n){animation-delay:.6s}.lite:nth-child(3n){animation-delay:1.2s}
+.conf{position:absolute;top:-24px;width:8px;height:12px;border-radius:2px;animation:fall 2.8s linear infinite}
+.sweep{background:conic-gradient(from 0deg,rgba(200,16,90,0) 0deg,rgba(200,16,90,0) 290deg,rgba(255,61,139,.55) 360deg);animation:spin 2.2s linear infinite}
+.ping{animation:ping 2.4s ease-out infinite;opacity:0}
+.ping2{animation-delay:.8s}.ping3{animation-delay:1.6s}
+.pin{animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}
+.spin{animation:spin .8s linear infinite}
+.tdots::after{content:"";animation:dots 1.2s steps(4) infinite}
+.vbar{animation:vprog 9s linear infinite;transform-origin:0 50%}
+.tilt{animation:tilt 3s ease-in-out infinite}
+.toast{animation:rise .3s ease both}
+input::placeholder{color:#A57C86}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+@keyframes hop{0%,100%{transform:translateY(0)}20%{transform:translateY(-8px)}40%{transform:translateY(0)}}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes stA{0%,100%{transform:rotate(-34deg)}50%{transform:rotate(18deg)}}
+@keyframes stB{0%,100%{transform:rotate(24deg)}50%{transform:rotate(-30deg)}}
+@keyframes lgA{0%{transform:translateY(0)}100%{transform:translateY(-2px)}}
+@keyframes lgB{0%{transform:translateY(-2px)}100%{transform:translateY(0)}}
+@keyframes wave{0%,100%{transform:rotate(0)}30%{transform:rotate(-46deg)}65%{transform:rotate(22deg)}}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.15)}}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.25)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+@keyframes heartUp{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:1}100%{transform:translateY(-70px) scale(1.15);opacity:0}}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes fall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(880px) rotate(620deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(.15);opacity:.9}100%{transform:scale(1);opacity:0}}
+@keyframes pop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@keyframes vprog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes tilt{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(-1deg) translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}.fh,.ping{opacity:0}}
+</style>
+</helmet>
+
+<div class="gridbg" style="position: relative; width: 390px; height: 844px; overflow: hidden; background-color: #4A0A1C; color: #FFF5E6; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column">
+
+  <!-- string lights -->
+  <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none">
+    <span class="lite" style="position: absolute; left: 8px; top: 170px; width: 7px; height: 7px; border-radius: 50%; background: #FFB81C; box-shadow: 0 0 12px 3px rgba(255,184,28,.7)"></span>
+    <span class="lite" style="position: absolute; left: 14px; top: 300px; width: 6px; height: 6px; border-radius: 50%; background: #FF8FB1; box-shadow: 0 0 12px 3px rgba(255,61,139,.6)"></span>
+    <span class="lite" style="position: absolute; left: 6px; top: 470px; width: 7px; height: 7px; border-radius: 50%; background: #FFB81C; box-shadow: 0 0 12px 3px rgba(255,184,28,.7)"></span>
+    <span class="lite" style="position: absolute; right: 9px; top: 220px; width: 7px; height: 7px; border-radius: 50%; background: #FFB81C; box-shadow: 0 0 12px 3px rgba(255,184,28,.7)"></span>
+    <span class="lite" style="position: absolute; right: 14px; top: 380px; width: 6px; height: 6px; border-radius: 50%; background: #FF8FB1; box-shadow: 0 0 12px 3px rgba(255,61,139,.6)"></span>
+    <span class="lite" style="position: absolute; right: 7px; top: 560px; width: 7px; height: 7px; border-radius: 50%; background: #FFB81C; box-shadow: 0 0 12px 3px rgba(255,184,28,.7)"></span>
+  </div>
+
+  <!-- bunting -->
+  <svg aria-hidden="true" width="390" height="36" viewBox="0 0 390 36" style="flex: none; display: block; position: relative">
+    <polygon points="0,0 39,0 19.5,30" fill="#FFF1DC"></polygon>
+    <polygon points="39,0 78,0 58.5,30" fill="#FF7A1A"></polygon>
+    <polygon points="78,0 117,0 97.5,30" fill="#FF3D8B"></polygon>
+    <polygon points="117,0 156,0 136.5,30" fill="#FFF1DC"></polygon>
+    <polygon points="156,0 195,0 175.5,30" fill="#FF7A1A"></polygon>
+    <polygon points="195,0 234,0 214.5,30" fill="#FF3D8B"></polygon>
+    <polygon points="234,0 273,0 253.5,30" fill="#FFF1DC"></polygon>
+    <polygon points="273,0 312,0 292.5,30" fill="#FF7A1A"></polygon>
+    <polygon points="312,0 351,0 331.5,30" fill="#FF3D8B"></polygon>
+    <polygon points="351,0 390,0 370.5,30" fill="#FFF1DC"></polygon>
+    <circle cx="39" cy="6" r="5" fill="#FFB81C"></circle><circle cx="78" cy="6" r="5" fill="#FFB81C"></circle><circle cx="117" cy="6" r="5" fill="#FFB81C"></circle><circle cx="156" cy="6" r="5" fill="#FFB81C"></circle><circle cx="195" cy="6" r="5" fill="#FFB81C"></circle><circle cx="234" cy="6" r="5" fill="#FFB81C"></circle><circle cx="273" cy="6" r="5" fill="#FFB81C"></circle><circle cx="312" cy="6" r="5" fill="#FFB81C"></circle><circle cx="351" cy="6" r="5" fill="#FFB81C"></circle>
+    <circle cx="39" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="78" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="117" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="156" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="195" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="234" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="273" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="312" cy="6" r="1.8" fill="#C8105A"></circle><circle cx="351" cy="6" r="1.8" fill="#C8105A"></circle>
+  </svg>
+
+  <!-- confetti -->
+  <sc-if value="{{showConfetti}}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; z-index: 3">
+      <span class="conf" style="left: 6%; background: #FFB81C; animation-delay: 0s"></span>
+      <span class="conf" style="left: 15%; background: #FF3D8B; animation-delay: .7s; animation-duration: 3.2s"></span>
+      <span class="conf" style="left: 24%; background: #FFF1DC; animation-delay: 1.4s"></span>
+      <span class="conf" style="left: 33%; background: #FF7A1A; animation-delay: .3s; animation-duration: 2.4s"></span>
+      <span class="conf" style="left: 44%; background: #0F7A68; animation-delay: 1.9s"></span>
+      <span class="conf" style="left: 53%; background: #FFB81C; animation-delay: 1s; animation-duration: 3.4s"></span>
+      <span class="conf" style="left: 62%; background: #FF3D8B; animation-delay: .2s"></span>
+      <span class="conf" style="left: 71%; background: #FFF1DC; animation-delay: 1.6s; animation-duration: 2.6s"></span>
+      <span class="conf" style="left: 80%; background: #FF7A1A; animation-delay: .5s"></span>
+      <span class="conf" style="left: 89%; background: #0F7A68; animation-delay: 1.2s; animation-duration: 3s"></span>
+      <span class="conf" style="left: 95%; background: #FFB81C; animation-delay: 2.1s"></span>
+    </div>
+  </sc-if>
+
+  <!-- header -->
+  <header style="flex: none; position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 6px 20px 10px">
+    <div style="display: flex; align-items: center; gap: 9px">
+      <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 4px; border-left: 3px solid #FFF5E6; border-right: 3px solid #FFF5E6; font-weight: 800; font-size: 14px; font-style: italic; letter-spacing: -.04em">17</span>
+      <span style="font-size: 18px; font-weight: 600; letter-spacing: -.02em">Modulus <span style="color: #FFB81C">Seventeen</span></span>
+    </div>
+    <sc-if value="{{canBack}}" hint-placeholder-val="{{ false }}">
+      <button aria-label="Go back" onClick="{{back}}" class="pbtn" style="width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,245,230,.5); background: rgba(255,245,230,.08); color: #FFF5E6; display: grid; place-items: center; padding: 0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+      </button>
+    </sc-if>
+    <sc-if value="{{noBack}}" hint-placeholder-val="{{ true }}">
+      <span style="padding: 6px 12px; border-radius: 999px; border: 1.5px solid #FFB81C; color: #FFB81C; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase">Navratri special</span>
+    </sc-if>
+  </header>
+
+  <!-- scroll body -->
+  <div style="flex: 1; min-height: 0; overflow-y: auto; position: relative; z-index: 1; padding: 0 20px 24px; display: flex; flex-direction: column; gap: 14px">
+
+    <!-- onboarding progress -->
+    <sc-if value="{{showProgress}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; gap: 6px" aria-label="Step {{stepNum}} of 3">
+        <sc-for list="{{progress}}" as="pg" hint-placeholder-count="3">
+          <span style="flex: 1; height: 5px; border-radius: 99px; background: {{pg.bg}}"></span>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ===== pre-stage blocks ===== -->
+    <sc-if value="{{is.age}}" hint-placeholder-val="{{ true }}">
+      <div class="scr" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+        <div style="display: flex; flex-direction: column; align-items: center; font-family: Anton, Impact, sans-serif; text-transform: uppercase; line-height: .9">
+          <span style="font-size: 30px; color: #FFF5E6; letter-spacing: .03em">Rent a</span>
+          <span style="font-size: 88px; color: #FFB81C; text-shadow: 4px 4px 0 #2B0711; letter-spacing: .01em">Garba</span>
+          <span style="font-size: 54px; color: #FF4F9A; text-shadow: 3px 3px 0 #2B0711; letter-spacing: .02em">Partner</span>
+        </div>
+        <div class="tilt" style="display: flex; align-items: baseline; gap: 8px; background: #FFB81C; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 12px; padding: 4px 16px 6px; box-shadow: 3px 3px 0 #2B0711">
+          <span style="font-size: 15px; font-weight: 800">at just</span>
+          <span style="font-family: Anton, Impact, sans-serif; font-size: 30px; color: #C8105A">₹69</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{is.under18}}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding-top: 18px">
+        <span style="display: grid; place-items: center; width: 72px; height: 72px; border-radius: 50%; background: #FFF5E6; color: #C8105A; border: 1.5px solid #2B0711; box-shadow: 4px 4px 0 #FFB81C; font-family: Anton, Impact, sans-serif; font-size: 26px">18+</span>
+        <h1 style="margin: 8px 0 0; font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">Not this <span class="ser" style="color: #FFB81C">year</span>, champ.</h1>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{is.gender}}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="display: flex; flex-direction: column; gap: 6px; padding-top: 6px">
+        <h1 style="margin: 0; font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">Who's dancing <span class="ser" style="color: #FFB81C">tonight?</span></h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #F2C9D2">Pick one so we can find your perfect Garba match.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{is.business}}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="display: flex; justify-content: center; padding-top: 4px">
+        <span style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; box-shadow: 3px 3px 0 #FFB81C; font-size: 13px; font-weight: 700">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #C8105A"></span>Special match for business owners
+        </span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{is.found}}" hint-placeholder-val="{{ false }}">
+      <div class="scr" style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center">
+        <span style="font-family: Anton, Impact, sans-serif; text-transform: uppercase; font-size: 44px; line-height: 1; color: #FFB81C; text-shadow: 3px 3px 0 #2B0711; letter-spacing: .02em">It's a match!</span>
+      </div>
+    </sc-if>
+
+    <!-- ===== the couple (one stage, posed per screen) ===== -->
+    <sc-if value="{{showStage}}" hint-placeholder-val="{{ true }}">
+      <div class="stage {{stageMode}}" style="display: flex; justify-content: center; flex: none">
+        <div style="position: relative; {{frameStyle}}">
+          <sc-if value="{{is.found}}" hint-placeholder-val="{{ false }}">
+            <span style="position: absolute; top: 14px; left: 14px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; font-size: 12px; font-weight: 700">{{partner.distance}}</span>
+            <span style="position: absolute; top: 14px; right: 14px; z-index: 2; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #FFB81C; color: #2B0711; border: 1.5px solid #2B0711">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            </span>
+            <sc-if value="{{hasPhoto}}" hint-placeholder-val="{{ false }}">
+              <img src="{{partnerPhoto}}" alt="Your Garba partner" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover">
+            </sc-if>
+          </sc-if>
+          <div style="display: flex; align-items: flex-end; justify-content: center; gap: {{stageGap}}px; height: 128px; transform: scale({{stageScale}}); transform-origin: 50% 100%">
+
+            <sc-if value="{{showBoy}}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+                <div class="chr">
+                  <svg class="px" width="110" height="115" viewBox="0 0 22 23" aria-hidden="true">
+                    <rect x="6" y="21" width="12" height="1" fill="#1E030A" opacity=".55"></rect>
+                    <g class="lgA"><rect x="7" y="18" width="2" height="3" fill="#FFF1DC"></rect><rect x="7" y="20" width="3" height="1" fill="#2B0711"></rect></g>
+                    <g class="lgB"><rect x="14" y="18" width="2" height="3" fill="#FFF1DC"></rect><rect x="14" y="20" width="3" height="1" fill="#2B0711"></rect></g>
+                    <g class="stL"><rect x="3" y="5" width="1" height="9" fill="#FFB81C"></rect><rect x="3" y="6" width="1" height="1" fill="#FF3D8B"></rect><rect x="3" y="8" width="1" height="1" fill="#FF3D8B"></rect><rect x="3" y="10" width="1" height="1" fill="#FF3D8B"></rect></g>
+                    <rect x="2" y="13" width="3" height="2" fill="#FFF1DC"></rect>
+                    <rect x="7" y="9" width="10" height="1" fill="#FFF1DC"></rect>
+                    <rect x="6" y="10" width="12" height="1" fill="#FFF1DC"></rect>
+                    <rect x="5" y="11" width="14" height="6" fill="#FFF1DC"></rect>
+                    <rect x="6" y="17" width="12" height="1" fill="#EBD3B0"></rect>
+                    <rect x="5" y="16" width="14" height="1" fill="#FF3D8B"></rect>
+                    <rect x="7" y="16" width="1" height="1" fill="#FFB81C"></rect><rect x="11" y="16" width="1" height="1" fill="#FFB81C"></rect><rect x="15" y="16" width="1" height="1" fill="#FFB81C"></rect>
+                    <rect x="6" y="1" width="4" height="1" fill="#FFF1DC"></rect>
+                    <rect x="5" y="2" width="1" height="7" fill="#FFF1DC"></rect>
+                    <rect x="6" y="2" width="4" height="5" fill="#FF7A1A"></rect>
+                    <rect x="10" y="3" width="1" height="4" fill="#FF7A1A"></rect>
+                    <rect x="6" y="7" width="6" height="2" fill="#D9530A"></rect>
+                    <rect x="10" y="2" width="1" height="1" fill="#FFF1DC"></rect>
+                    <rect x="11" y="3" width="1" height="4" fill="#FFF1DC"></rect>
+                    <rect x="12" y="7" width="1" height="2" fill="#FFF1DC"></rect>
+                    <rect x="10" y="11" width="3" height="4" fill="#FFB81C"></rect>
+                    <rect x="14" y="11" width="3" height="4" fill="#FFB81C"></rect>
+                    <rect x="13" y="12" width="1" height="1" fill="#FFB81C"></rect>
+                    <rect class="eye" x="11" y="12" width="1" height="2" fill="#2B0711"></rect>
+                    <rect class="eye" x="15" y="12" width="1" height="2" fill="#2B0711"></rect>
+                    <rect x="8" y="14" width="1" height="1" fill="#FF8FB1"></rect>
+                    <rect x="18" y="14" width="1" height="1" fill="#FF8FB1"></rect>
+                    <g class="stR"><rect x="20" y="5" width="1" height="9" fill="#FFB81C"></rect><rect x="20" y="6" width="1" height="1" fill="#FF3D8B"></rect><rect x="20" y="8" width="1" height="1" fill="#FF3D8B"></rect><rect x="20" y="10" width="1" height="1" fill="#FF3D8B"></rect></g>
+                    <rect x="19" y="13" width="3" height="2" fill="#FFF1DC"></rect>
+                  </svg>
+                </div>
+                <sc-if value="{{is.business}}" hint-placeholder-val="{{ false }}">
+                  <span style="padding: 2px 10px; border-radius: 6px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; font-size: 11px; font-weight: 800; letter-spacing: .12em">SELL</span>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{showHearts}}" hint-placeholder-val="{{ true }}">
+              <div style="position: relative; width: 44px; height: 104px; display: flex; align-items: center; justify-content: center">
+                <svg class="px beat" width="35" height="30" viewBox="0 0 7 6" fill="#FF3D8B" aria-hidden="true"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg>
+                <svg class="px fh" width="14" height="12" viewBox="0 0 7 6" fill="#FFB81C" aria-hidden="true" style="position: absolute; left: 0; bottom: 30px"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg>
+                <svg class="px fh fh2" width="12" height="10" viewBox="0 0 7 6" fill="#FF8FB1" aria-hidden="true" style="position: absolute; right: 0; bottom: 36px"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg>
+                <svg class="px fh fh3" width="10" height="9" viewBox="0 0 7 6" fill="#FFF1DC" aria-hidden="true" style="position: absolute; left: 16px; bottom: 44px"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{is.business}}" hint-placeholder-val="{{ false }}">
+              <div style="height: 104px; display: flex; align-items: center">
+                <span style="display: inline-flex; align-items: center; height: 34px; padding: 0 8px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 10px; box-shadow: 2px 2px 0 #FFB81C; font-weight: 800; font-style: italic; font-size: 14px; letter-spacing: -.04em">|17|</span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{showGirl}}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 2px">
+                <div style="transform: scaleX(-1)">
+                  <div class="chr late">
+                    <svg class="px" width="110" height="115" viewBox="0 0 22 23" aria-hidden="true">
+                      <rect x="5" y="21" width="14" height="1" fill="#1E030A" opacity=".55"></rect>
+                      <g class="lgA"><rect x="8" y="19" width="2" height="2" fill="#FFF1DC"></rect><rect x="8" y="20" width="2" height="1" fill="#FFB81C"></rect></g>
+                      <g class="lgB"><rect x="14" y="19" width="2" height="2" fill="#FFF1DC"></rect><rect x="14" y="20" width="2" height="1" fill="#FFB81C"></rect></g>
+                      <g class="stL"><rect x="3" y="5" width="1" height="9" fill="#FFB81C"></rect><rect x="3" y="6" width="1" height="1" fill="#0F7A68"></rect><rect x="3" y="8" width="1" height="1" fill="#0F7A68"></rect><rect x="3" y="10" width="1" height="1" fill="#0F7A68"></rect></g>
+                      <rect x="2" y="13" width="3" height="2" fill="#FFF1DC"></rect>
+                      <rect x="7" y="9" width="10" height="1" fill="#FFF1DC"></rect>
+                      <rect x="6" y="10" width="12" height="1" fill="#FFF1DC"></rect>
+                      <rect x="5" y="11" width="14" height="6" fill="#FFF1DC"></rect>
+                      <rect x="4" y="16" width="16" height="3" fill="#0F7A68"></rect>
+                      <rect x="4" y="18" width="16" height="1" fill="#FFB81C"></rect>
+                      <rect x="6" y="17" width="1" height="1" fill="#FF3D8B"></rect><rect x="9" y="17" width="1" height="1" fill="#FF3D8B"></rect><rect x="12" y="17" width="1" height="1" fill="#FF3D8B"></rect><rect x="15" y="17" width="1" height="1" fill="#FF3D8B"></rect><rect x="18" y="17" width="1" height="1" fill="#FF3D8B"></rect>
+                      <rect x="6" y="1" width="4" height="1" fill="#FFF1DC"></rect>
+                      <rect x="5" y="2" width="1" height="7" fill="#FFF1DC"></rect>
+                      <rect x="6" y="2" width="4" height="5" fill="#FF3D8B"></rect>
+                      <rect x="10" y="3" width="1" height="4" fill="#FF3D8B"></rect>
+                      <rect x="6" y="7" width="6" height="2" fill="#C8105A"></rect>
+                      <rect x="10" y="2" width="1" height="1" fill="#FFF1DC"></rect>
+                      <rect x="11" y="3" width="1" height="4" fill="#FFF1DC"></rect>
+                      <rect x="12" y="7" width="1" height="2" fill="#FFF1DC"></rect>
+                      <rect x="13" y="10" width="1" height="1" fill="#C8105A"></rect>
+                      <rect class="eye" x="11" y="12" width="1" height="3" fill="#2B0711"></rect>
+                      <rect class="eye" x="15" y="12" width="1" height="3" fill="#2B0711"></rect>
+                      <rect x="9" y="15" width="1" height="1" fill="#FF8FB1"></rect>
+                      <rect x="17" y="15" width="1" height="1" fill="#FF8FB1"></rect>
+                      <g class="stR"><rect x="20" y="5" width="1" height="9" fill="#FFB81C"></rect><rect x="20" y="6" width="1" height="1" fill="#0F7A68"></rect><rect x="20" y="8" width="1" height="1" fill="#0F7A68"></rect><rect x="20" y="10" width="1" height="1" fill="#0F7A68"></rect></g>
+                      <rect x="19" y="13" width="3" height="2" fill="#FFF1DC"></rect>
+                    </svg>
+                  </div>
+                </div>
+                <sc-if value="{{is.business}}" hint-placeholder-val="{{ false }}">
+                  <span style="padding: 2px 10px; border-radius: 6px; background: #FFF5E6; color: #C8105A; border: 1.5px solid #2B0711; font-size: 11px; font-weight: 800; letter-spacing: .12em">BUY</span>
+                </sc-if>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== SCREEN: age gate ===== -->
+    <sc-if value="{{is.age}}" hint-placeholder-val="{{ true }}">
+      <section class="scr" style="background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FF3D8B; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em">Are you <span class="ser" style="color: #C8105A">18</span> or above?</h2>
+        <p style="margin: 0 0 4px; font-size: 14px; line-height: 1.5; color: #7A4A55">Garba partners are strictly for grown-ups.</p>
+        <button class="pbtn" onClick="{{goGender}}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #2B0711; color: #FFF5E6; font-size: 16px; font-weight: 700; box-shadow: 3px 3px 0 #FFB81C">
+          <span>Yes, I'm 18+</span>
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFB81C; color: #2B0711; display: grid; place-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+        </button>
+        <button class="pbtn" onClick="{{goUnder}}" style="width: 100%; height: 52px; border: 1.5px solid #2B0711; border-radius: 999px; background: transparent; color: #2B0711; font-size: 15px; font-weight: 600">No, I'm under 18</button>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: under 18 ===== -->
+    <sc-if value="{{is.under18}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FF3D8B; padding: 20px; display: flex; flex-direction: column; gap: 12px; text-align: center">
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #5E2A37">Garba partners are for 18+ only. Go dance with your cousins tonight. They need you more.</p>
+        <button class="pbtn" onClick="{{back}}" style="width: 100%; height: 52px; border: 1.5px solid #2B0711; border-radius: 999px; background: #2B0711; color: #FFF5E6; font-size: 15px; font-weight: 700">Go back</button>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: gender ===== -->
+    <sc-if value="{{is.gender}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+          <button class="pbtn" onClick="{{pickMale}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 22px; box-shadow: 4px 4px 0 #FF7A1A">
+            <span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #FFE2CC; color: #B8460A">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="5"></circle><path d="M14 10l6-6M15 4h5v5"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 700">Male</span><span style="font-size: 13px; color: #7A4A55">He / him</span></span>
+          </button>
+          <button class="pbtn" onClick="{{pickFemale}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 22px; box-shadow: 4px 4px 0 #FF3D8B">
+            <span style="display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #FFDCE9; color: #C8105A">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"></circle><path d="M12 14v8M9 19h6"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 700">Female</span><span style="font-size: 13px; color: #7A4A55">She / her</span></span>
+          </button>
+        </div>
+        <button class="pbtn" onClick="{{pickOther}}" style="width: 100%; height: 52px; border: 1.5px solid rgba(255,245,230,.55); border-radius: 999px; background: rgba(255,245,230,.06); color: #FFF5E6; font-size: 15px; font-weight: 600">Others / prefer not to say</button>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: profession ===== -->
+    <sc-if value="{{is.profession}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; gap: 12px; padding-top: 6px">
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px">
+          <h1 style="margin: 0; font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">What do you <span class="ser" style="color: #FFB81C">do?</span></h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #F2C9D2">Your partner should match your hustle.</p>
+        </div>
+
+        <button class="pbtn" onClick="{{pickBiz}}" style="position: relative; display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 14px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; box-shadow: 4px 4px 0 #FFB81C">
+          <span style="flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #FFF0C7; color: #9A6200"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"></path><path d="M4 9v11h16V9"></path><path d="M9 20v-6h6v6"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Business owner</span><span style="font-size: 12.5px; color: #7A4A55">Shop, restaurant, boutique or wholesale</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+          <span style="position: absolute; top: -11px; right: 14px; padding: 3px 10px; border-radius: 999px; background: #C8105A; color: #FFFFFF; font-size: 11px; font-weight: 700; border: 1.5px solid #2B0711">Special match</span>
+        </button>
+
+        <button class="pbtn" onClick="{{pickSelf}}" style="display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 14px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; box-shadow: 4px 4px 0 #1E030A">
+          <span style="flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #FFDCE9; color: #C8105A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Self-employed</span><span style="font-size: 12.5px; color: #7A4A55">Freelancer, consultant, creator</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+        </button>
+
+        <button class="pbtn" onClick="{{pickSalaried}}" style="display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 14px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; box-shadow: 4px 4px 0 #1E030A">
+          <span style="flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #FFE2CC; color: #B8460A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5"></path><path d="M16 14h.01"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Salaried</span><span style="font-size: 12.5px; color: #7A4A55">9 to 5 at work, 9 to 12 at Garba</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+        </button>
+
+        <button class="pbtn" onClick="{{pickStudent}}" style="display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 14px; text-align: left; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; box-shadow: 4px 4px 0 #1E030A">
+          <span style="flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #D3EFE8; color: #0F7A68"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Student / other</span><span style="font-size: 12.5px; color: #7A4A55">College, homemaker, or just here to dance</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg>
+        </button>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: business owner match ===== -->
+    <sc-if value="{{is.business}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FFB81C; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <span style="flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: #2B0711; color: #FFF5E6; font-weight: 800; font-style: italic; font-size: 15px; letter-spacing: -.04em">|17|</span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px; font-weight: 700">Modulus Seventeen</span><span style="font-size: 12.5px; color: #7A4A55">India's most affordable business ecosystem</span></span>
+        </div>
+        <h2 style="margin: 0; font-size: 26px; line-height: 1.2; font-weight: 700; letter-spacing: -.02em">Your partner for <span class="ser" style="color: #C8105A">Business</span> is ready</h2>
+        <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #5E2A37">Garba season brings the rush. Let your partner handle billing, stock and delivery while you grow.</p>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #7A4A55">Loves</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <span style="padding: 6px 11px; border-radius: 999px; background: #FFE9C2; border: 1.5px solid #2B0711; font-size: 12.5px; font-weight: 600">Fast billing in rush hour</span>
+            <span style="padding: 6px 11px; border-radius: 999px; background: #FFDCE9; border: 1.5px solid #2B0711; font-size: 12.5px; font-weight: 600">Zero commission on BUY</span>
+            <span style="padding: 6px 11px; border-radius: 999px; background: #D3EFE8; border: 1.5px solid #2B0711; font-size: 12.5px; font-weight: 600">One stock count, online + offline</span>
+            <span style="padding: 6px 11px; border-radius: 999px; background: #FFE2CC; border: 1.5px solid #2B0711; font-size: 12.5px; font-weight: 600">Delivery managed in SELL</span>
+          </div>
+        </div>
+        <a href="{{siteUrl}}" target="_blank" rel="noopener" class="pbtn" style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #2B0711; color: #FFF5E6; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 3px 3px 0 #FF3D8B">
+          <span>Meet your partner</span>
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFB81C; color: #2B0711; display: grid; place-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+        </a>
+        <p style="margin: 0; text-align: center; font-size: 12px; color: #7A4A55">Free to start on SELL · Zero commission on BUY orders</p>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: radar search ===== -->
+    <sc-if value="{{is.radar}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; gap: 14px; padding-top: 6px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">Finding your <span class="ser" style="color: #FFB81C">Garba partner</span><span class="tdots"></span></h1>
+          <p aria-live="polite" style="margin: 0; font-size: 15px; color: #F2C9D2">{{radarMsg}}</p>
+        </div>
+
+        <div style="position: relative; width: 350px; height: 300px; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FF3D8B; overflow: hidden; background: #FBE6CC" aria-label="Map searching nearby">
+          <svg width="350" height="300" viewBox="0 0 350 300" aria-hidden="true" style="position: absolute; inset: 0">
+            <rect x="14" y="16" width="90" height="62" rx="8" fill="#F4D3AE"></rect>
+            <rect x="130" y="16" width="70" height="44" rx="8" fill="#F4D3AE"></rect>
+            <rect x="228" y="16" width="108" height="64" rx="8" fill="#F4D3AE"></rect>
+            <rect x="14" y="108" width="64" height="76" rx="8" fill="#F4D3AE"></rect>
+            <circle cx="276" cy="206" r="46" fill="#CDE7C4"></circle>
+            <rect x="130" y="216" width="70" height="70" rx="8" fill="#F4D3AE"></rect>
+            <rect x="14" y="216" width="90" height="70" rx="8" fill="#F4D3AE"></rect>
+            <path d="M-10 260 C 80 236, 120 160, 210 146 S 310 110, 360 54" stroke="#A9DCCF" stroke-width="16" fill="none"></path>
+            <path d="M0 94 H350 M116 0 V300 M214 0 V300 M0 200 H350" stroke="#FFF8EE" stroke-width="10" fill="none"></path>
+            <path d="M0 150 H116 M214 120 H350 M160 94 V200" stroke="#FFF8EE" stroke-width="5" fill="none"></path>
+          </svg>
+          <div style="position: absolute; left: 55px; top: 30px; width: 240px; height: 240px">
+            <span style="position: absolute; inset: 0; border-radius: 50%; border: 1.5px dashed rgba(200,16,90,.45)"></span>
+            <span style="position: absolute; inset: 60px; border-radius: 50%; border: 1.5px dashed rgba(200,16,90,.45)"></span>
+            <span class="sweep" style="position: absolute; inset: 0; border-radius: 50%"></span>
+            <span class="ping" style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid #C8105A"></span>
+            <span class="ping ping2" style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid #C8105A"></span>
+            <span class="ping ping3" style="position: absolute; inset: 0; border-radius: 50%; border: 2px solid #C8105A"></span>
+            <span style="position: absolute; left: 108px; top: 108px; width: 24px; height: 24px; border-radius: 50%; background: #2B0711; border: 3px solid #FFF5E6; box-shadow: 0 0 0 2px #2B0711; box-sizing: border-box"></span>
+          </div>
+          <span class="pin" style="position: absolute; left: 48px; top: 44px; animation-delay: .6s; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #FFF5E6; border: 2px solid #FF7A1A"><svg class="px" width="14" height="12" viewBox="0 0 7 6" fill="#FF7A1A" aria-hidden="true"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg></span>
+          <span class="pin" style="position: absolute; left: 268px; top: 50px; animation-delay: 1.4s; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #FFF5E6; border: 2px solid #FF3D8B"><svg class="px" width="14" height="12" viewBox="0 0 7 6" fill="#FF3D8B" aria-hidden="true"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg></span>
+          <span class="pin" style="position: absolute; left: 70px; top: 232px; animation-delay: 2.2s; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #FFF5E6; border: 2px solid #0F7A68"><svg class="px" width="14" height="12" viewBox="0 0 7 6" fill="#0F7A68" aria-hidden="true"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg></span>
+          <span class="pin" style="position: absolute; left: 252px; top: 226px; animation-delay: 3s; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #C8105A; border: 2px solid #2B0711; box-shadow: 0 0 0 4px rgba(255,61,139,.35)"><svg class="px" width="18" height="15" viewBox="0 0 7 6" fill="#FFF5E6" aria-hidden="true"><rect x="1" y="0" width="2" height="1"></rect><rect x="4" y="0" width="2" height="1"></rect><rect x="0" y="1" width="7" height="2"></rect><rect x="1" y="3" width="5" height="1"></rect><rect x="2" y="4" width="3" height="1"></rect><rect x="3" y="5" width="1" height="1"></rect></svg></span>
+        </div>
+
+        <div style="background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+          <sc-for list="{{radarSteps}}" as="it" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 12px; min-height: 26px">
+              <sc-if value="{{it.done}}" hint-placeholder-val="{{ false }}">
+                <span style="flex: none; width: 24px; height: 24px; border-radius: 50%; background: #C8105A; color: #FFFFFF; display: grid; place-items: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              </sc-if>
+              <sc-if value="{{it.active}}" hint-placeholder-val="{{ false }}">
+                <span class="spin" style="flex: none; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #F5D2DD; border-top-color: #C8105A; box-sizing: border-box"></span>
+              </sc-if>
+              <sc-if value="{{it.pending}}" hint-placeholder-val="{{ true }}">
+                <span style="flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px dashed #B98C97; box-sizing: border-box"></span>
+              </sc-if>
+              <span style="font-size: 14px; font-weight: 600">{{it.label}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: match found ===== -->
+    <sc-if value="{{is.found}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; padding-top: 6px">
+        <span style="font-family: Anton, Impact, sans-serif; font-size: 36px; line-height: 1; letter-spacing: .08em; color: #FFF5E6">{{partner.masked}}</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(255,245,230,.1); border: 1.5px solid rgba(255,245,230,.4); font-size: 13px; font-weight: 600">{{partner.job}}</span>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px">
+          <sc-for list="{{partner.traits}}" as="tr" hint-placeholder-count="3">
+            <span style="padding: 5px 10px; border-radius: 999px; background: #FFB81C; color: #2B0711; border: 1.5px solid #2B0711; font-size: 12px; font-weight: 700">{{tr}}</span>
+          </sc-for>
+        </div>
+        <div style="width: 100%; box-sizing: border-box; margin-top: 4px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FF3D8B; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+          <p style="margin: 0; font-size: 16px; line-height: 1.45; font-weight: 600"><span class="ser" style="color: #C8105A">Congratulations!</span> You've rented your Garba partner for <span style="font-weight: 800">₹69</span>.</p>
+          <button class="pbtn" onClick="{{goVideo}}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #C8105A; color: #FFFFFF; font-size: 16px; font-weight: 700; box-shadow: 3px 3px 0 #2B0711">
+            <span>Show my partner</span>
+            <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFF5E6; color: #C8105A; display: grid; place-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+          </button>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: video reveal ===== -->
+    <sc-if value="{{is.video}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; align-items: center; gap: 14px">
+        <h1 style="margin: 0; align-self: flex-start; font-size: 26px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">Meet your <span class="ser" style="color: #FFB81C">partner</span></h1>
+
+        <div style="position: relative; width: 216px; height: 384px; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FFB81C; overflow: hidden; background: #2B0711">
+          <sc-if value="{{hasVideo}}" hint-placeholder-val="{{ false }}">
+            <video src="{{videoUrl}}" controls="" playsinline="" style="width: 100%; height: 100%; object-fit: cover; display: block"></video>
+          </sc-if>
+          <sc-if value="{{noVideo}}" hint-placeholder-val="{{ true }}">
+            <div class="gridbg" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background-color: #3A0716">
+              <span style="position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; background: #C8105A; color: #FFFFFF; font-size: 11px; font-weight: 700; letter-spacing: .04em">PARTNER REVEAL</span>
+              <button aria-label="{{playLabel}}" onClick="{{togglePlay}}" class="pbtn" style="width: 68px; height: 68px; border-radius: 50%; border: 1.5px solid #2B0711; background: #FFB81C; color: #2B0711; display: grid; place-items: center; box-shadow: 3px 3px 0 #FF3D8B; padding: 0">
+                <sc-if value="{{notPlaying}}" hint-placeholder-val="{{ true }}"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></sc-if>
+                <sc-if value="{{playing}}" hint-placeholder-val="{{ false }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"></path></svg></sc-if>
+              </button>
+              <span style="font-size: 12px; color: #F2C9D2">[9:16 video goes here]</span>
+              <div style="position: absolute; left: 12px; right: 12px; bottom: 12px; height: 4px; border-radius: 99px; background: rgba(255,245,230,.25); overflow: hidden">
+                <sc-if value="{{playing}}" hint-placeholder-val="{{ false }}"><span class="vbar" style="display: block; height: 100%; background: #FFB81C"></span></sc-if>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="width: 100%; box-sizing: border-box; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; gap: 10px">
+            <button class="pbtn" aria-pressed="{{upPressed}}" onClick="{{voteUp}}" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 1.5px solid #2B0711; border-radius: 999px; background: {{upBg}}; color: {{upFg}}; font-size: 15px; font-weight: 700">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"></path><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"></path></svg>
+              <span>{{upsLabel}}</span>
+            </button>
+            <button class="pbtn" aria-pressed="{{downPressed}}" onClick="{{voteDown}}" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 1.5px solid #2B0711; border-radius: 999px; background: {{downBg}}; color: {{downFg}}; font-size: 15px; font-weight: 700">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"></path><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"></path></svg>
+              <span>{{downsLabel}}</span>
+            </button>
+          </div>
+          <div style="height: 8px; border-radius: 99px; background: #F2D9DF; overflow: hidden"><span style="display: block; height: 100%; width: {{upPct}}%; background: #C8105A; border-radius: 99px"></span></div>
+          <span style="font-size: 12.5px; color: #7A4A55">{{upPct}}% of people laughed at their match</span>
+        </div>
+
+        <button class="pbtn" onClick="{{goGiveaway}}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #C8105A; color: #FFFFFF; font-size: 16px; font-weight: 700; box-shadow: 3px 3px 0 #FFB81C">
+          <span>Take part in the Giveaway</span>
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFF5E6; color: #C8105A; display: grid; place-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"></path></svg></span>
+        </button>
+        <button class="pbtn" onClick="{{share}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 52px; border: 1.5px solid #FFF5E6; border-radius: 999px; background: transparent; color: #FFF5E6; font-size: 15px; font-weight: 700">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>
+          Share the video
+        </button>
+        <a href="{{siteUrl}}" target="_blank" rel="noopener" style="font-size: 13px; font-weight: 600; padding: 8px 0">Own a shop? Your real partner is here →</a>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: giveaway entry ===== -->
+    <sc-if value="{{is.giveaway}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; gap: 14px; padding-top: 6px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em">Enter the <span class="ser" style="color: #FFB81C">Giveaway</span></h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #F2C9D2">Win [GIVEAWAY PRIZE]. Winners picked on [DATE].</p>
+        </div>
+        <div style="background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; border-radius: 24px; box-shadow: 5px 5px 0 #FF3D8B; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="gw-name" style="font-size: 13px; font-weight: 700">Your name</label>
+            <input id="gw-name" type="text" autocomplete="name" placeholder="e.g. Riya Shah" value="{{name}}" onChange="{{onName}}" style="height: 50px; padding: 0 16px; border: 1.5px solid #2B0711; border-radius: 14px; background: #FFFFFF; color: #2B0711; font-size: 15px; box-sizing: border-box">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="gw-phone" style="font-size: 13px; font-weight: 700">Phone number</label>
+            <div style="display: flex; align-items: center; height: 50px; border: 1.5px solid #2B0711; border-radius: 14px; background: #FFFFFF; overflow: hidden">
+              <span style="padding: 0 12px; height: 100%; display: grid; place-items: center; background: #FFE9C2; border-right: 1.5px solid #2B0711; font-size: 15px; font-weight: 700">+91</span>
+              <input id="gw-phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit number" value="{{phone}}" onChange="{{onPhone}}" style="flex: 1; min-width: 0; height: 100%; padding: 0 14px; border: 0; background: transparent; color: #2B0711; font-size: 15px">
+            </div>
+          </div>
+          <button class="pbtn" onClick="{{enter}}" disabled="{{cannotEnter}}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #2B0711; color: #FFF5E6; font-size: 16px; font-weight: 700; opacity: {{enterOpacity}}; box-shadow: 3px 3px 0 #FFB81C">
+            <span>Count me in</span>
+            <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFB81C; color: #2B0711; display: grid; place-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </button>
+          <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #7A4A55; text-align: center">By entering you agree to the [giveaway T&amp;C].</p>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ===== SCREEN: entered ===== -->
+    <sc-if value="{{is.done}}" hint-placeholder-val="{{ false }}">
+      <section class="scr" style="display: flex; flex-direction: column; gap: 12px; text-align: center">
+        <h1 style="margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -.02em">You're <span class="ser" style="color: #FFB81C">in!</span></h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #F2C9D2">Winners announced on [DATE] on our Instagram. Keep your phone close and your dandiya closer.</p>
+        <button class="pbtn" onClick="{{share}}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; padding: 0 6px 0 22px; border: 1.5px solid #2B0711; border-radius: 999px; background: #C8105A; color: #FFFFFF; font-size: 16px; font-weight: 700; box-shadow: 3px 3px 0 #FFB81C; margin-top: 6px">
+          <span>Share with your Garba gang</span>
+          <span style="width: 44px; height: 44px; border-radius: 50%; background: #FFF5E6; color: #C8105A; display: grid; place-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg></span>
+        </button>
+        <a href="{{siteUrl}}" target="_blank" rel="noopener" class="pbtn" style="display: flex; align-items: center; justify-content: center; height: 52px; border: 1.5px solid #FFF5E6; border-radius: 999px; color: #FFF5E6; font-size: 15px; font-weight: 700; text-decoration: none">Visit Modulus Seventeen</a>
+      </section>
+    </sc-if>
+
+  </div>
+
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+    <div role="status" class="toast" style="position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 4; padding: 10px 18px; border-radius: 999px; background: #FFF5E6; color: #2B0711; border: 1.5px solid #2B0711; box-shadow: 3px 3px 0 #FFB81C; font-size: 14px; font-weight: 700; white-space: nowrap">{{toast}}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"startScreen":{"editor":"enum","options":["age","under18","gender","profession","business","radar","found","video","giveaway","done"],"default":"age","section":"Prototype"},"siteUrl":{"editor":"text","default":"https://modulusseventeen.com","section":"Links"},"videoUrl":{"editor":"text","default":"","section":"Media"},"photoFemale":{"editor":"text","default":"","section":"Media"},"photoMale":{"editor":"text","default":"","section":"Media"},"likesSeed":{"editor":"int","default":1284,"section":"Demo counts"},"dislikesSeed":{"editor":"int","default":97,"section":"Demo counts"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  state = { screen: null, gender: null, prof: null, step: 0, playing: false, vote: null, name: '', phone: '', toast: '' };
+  timers = [];
+
+  componentDidMount() { if (this.cur() === 'radar') this.startRadar(); }
+  componentWillUnmount() { this.clear(); }
+  componentDidUpdate(prev) {
+    if (prev.startScreen !== this.props.startScreen) {
+      this.clear();
+      this.setState({ screen: null, step: 0, playing: false }, () => { if (this.cur() === 'radar') this.startRadar(); });
+    }
+  }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  cur() { return this.state.screen || this.props.startScreen || 'age'; }
+  go(s) {
+    this.clear();
+    this.setState({ screen: s, step: 0, playing: false });
+    if (s === 'radar') this.startRadar();
+  }
+  startRadar() {
+    [1, 2, 3].forEach((n, i) => this.timers.push(setTimeout(() => this.setState({ step: n }), 1300 * (i + 1))));
+    this.timers.push(setTimeout(() => this.setState({ screen: 'found', step: 0 }), 4600));
+  }
+  flash(msg) {
+    this.setState({ toast: msg });
+    this.timers.push(setTimeout(() => this.setState({ toast: '' }), 2200));
+  }
+
+  renderVals() {
+    const s = this.cur();
+    const st = this.state;
+    const p = this.props;
+    const BACK = { under18: 'age', gender: 'age', profession: 'gender', business: 'profession', radar: 'profession', found: 'profession', video: 'found', giveaway: 'video', done: 'video' };
+    const names = ['age', 'under18', 'gender', 'profession', 'business', 'radar', 'found', 'video', 'giveaway', 'done'];
+    const is = {};
+    names.forEach((n) => { is[n] = s === n; });
+
+    const g = st.gender || 'male';
+    const partnerFemale = g !== 'female';
+    const JOBS = {
+      self: partnerFemale ? 'Freelance designer · Garba since age 5' : 'Freelance photographer · Garba since age 5',
+      salaried: partnerFemale ? 'Software engineer · weekend Garba pro' : 'Bank manager · weekend Garba pro',
+      student: partnerFemale ? 'Student · College Garba champion' : 'Student · College Dandiya champion'
+    };
+    const photo = partnerFemale ? (p.photoFemale || '') : (p.photoMale || '');
+    const partner = {
+      masked: partnerFemale ? 'P***** J***' : 'R***** M*****',
+      job: JOBS[st.prof] || JOBS.student,
+      distance: '0.8 km away',
+      traits: partnerFemale
+        ? ['47 rounds non-stop', 'Never misses a beat', 'Brings her own dandiya']
+        : ['47 rounds non-stop', 'Steps on toes only twice', 'Brings his own dandiya']
+    };
+
+    const STAGE = {
+      age: { mode: 'dance', boy: true, girl: true, hearts: true, gap: 22, scale: 1 },
+      under18: { mode: 'sad', boy: true, girl: true, hearts: false, gap: 46, scale: 1 },
+      gender: { mode: 'idle', boy: true, girl: true, hearts: false, gap: 66, scale: 1 },
+      business: { mode: 'wave', boy: true, girl: true, hearts: false, gap: 14, scale: 1 },
+      found: { mode: 'dance', boy: !partnerFemale && !photo, girl: partnerFemale && !photo, hearts: false, gap: 0, scale: 1.65 },
+      done: { mode: 'dance', boy: true, girl: true, hearts: true, gap: 22, scale: 1 }
+    };
+    const sc = STAGE[s];
+    const frameStyle = is.found
+      ? 'width: 250px; height: 270px; box-sizing: border-box; border: 1.5px solid #2B0711; border-radius: 28px; background-color: #FF3D8B; background-image: radial-gradient(rgba(255,245,230,.35) 1.5px, transparent 1.6px); background-size: 16px 16px; box-shadow: 6px 6px 0 #FFB81C; transform: rotate(-2deg); overflow: hidden; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 26px'
+      : 'display: flex; align-items: flex-end; justify-content: center';
+
+    const steps = ['Scanning pandals near you', 'Checking dandiya skills', 'Matching your vibe'];
+    const radarSteps = steps.map((label, i) => ({ label, done: st.step > i, active: st.step === i, pending: st.step < i }));
+    const radarMsg = ['Looking around your area…', 'Found a few dancers nearby…', 'Shortlisting the best moves…', 'Partner found!'][st.step] || '';
+
+    const seedUp = p.likesSeed ?? 1284;
+    const seedDown = p.dislikesSeed ?? 97;
+    const ups = seedUp + (st.vote === 'up' ? 1 : 0);
+    const downs = seedDown + (st.vote === 'down' ? 1 : 0);
+    const upPct = Math.round((ups * 100) / Math.max(1, ups + downs));
+    const fmt = (n) => n.toLocaleString('en-IN');
+
+    const stepNum = s === 'age' ? 1 : s === 'gender' ? 2 : 3;
+    const progress = [1, 2, 3].map((n) => ({ bg: n <= stepNum ? '#FF3D8B' : 'rgba(255,245,230,.2)' }));
+
+    const phoneOk = /^[6-9]\d{9}$/.test(st.phone);
+    const canEnter = st.name.trim().length > 1 && phoneOk;
+    const shareUrl = (typeof location !== 'undefined' && location.href) || p.siteUrl;
+
+    return {
+      is,
+      canBack: s !== 'age',
+      noBack: s === 'age',
+      back: () => this.go(BACK[s] || 'age'),
+      showProgress: is.age || is.gender || is.profession,
+      stepNum,
+      progress,
+      showStage: !!sc,
+      stageMode: sc ? sc.mode : '',
+      showBoy: !!(sc && sc.boy),
+      showGirl: !!(sc && sc.girl),
+      showHearts: !!(sc && sc.hearts),
+      stageGap: sc ? sc.gap : 0,
+      stageScale: sc ? sc.scale : 1,
+      frameStyle,
+      hasPhoto: !!photo,
+      partnerPhoto: photo,
+      partner,
+      showConfetti: is.found || is.done,
+      siteUrl: p.siteUrl || 'https://modulusseventeen.com',
+
+      goGender: () => this.go('gender'),
+      goUnder: () => this.go('under18'),
+      pickMale: () => { this.setState({ gender: 'male' }); this.go('profession'); },
+      pickFemale: () => { this.setState({ gender: 'female' }); this.go('profession'); },
+      pickOther: () => { this.setState({ gender: 'other' }); this.go('profession'); },
+      pickBiz: () => { this.setState({ prof: 'biz' }); this.go('business'); },
+      pickSelf: () => { this.setState({ prof: 'self' }); this.go('radar'); },
+      pickSalaried: () => { this.setState({ prof: 'salaried' }); this.go('radar'); },
+      pickStudent: () => { this.setState({ prof: 'student' }); this.go('radar'); },
+
+      radarSteps,
+      radarMsg,
+      goVideo: () => this.go('video'),
+
+      hasVideo: !!p.videoUrl,
+      noVideo: !p.videoUrl,
+      videoUrl: p.videoUrl || '',
+      playing: st.playing,
+      notPlaying: !st.playing,
+      playLabel: st.playing ? 'Pause video' : 'Play video',
+      togglePlay: () => this.setState({ playing: !st.playing }),
+
+      voteUp: () => this.setState({ vote: st.vote === 'up' ? null : 'up' }),
+      voteDown: () => this.setState({ vote: st.vote === 'down' ? null : 'down' }),
+      upPressed: st.vote === 'up' ? 'true' : 'false',
+      downPressed: st.vote === 'down' ? 'true' : 'false',
+      upBg: st.vote === 'up' ? '#C8105A' : '#FFFFFF',
+      upFg: st.vote === 'up' ? '#FFFFFF' : '#2B0711',
+      downBg: st.vote === 'down' ? '#2B0711' : '#FFFFFF',
+      downFg: st.vote === 'down' ? '#FFF5E6' : '#2B0711',
+      upsLabel: fmt(ups),
+      downsLabel: fmt(downs),
+      upPct,
+
+      goGiveaway: () => this.go('giveaway'),
+      share: async () => {
+        const data = { title: 'I just rented a Garba partner for ₹69', text: 'Look who I got matched with this Navratri!', url: shareUrl };
+        try {
+          if (navigator.share) { await navigator.share(data); }
+          else if (navigator.clipboard) { await navigator.clipboard.writeText(shareUrl); this.flash('Link copied'); }
+        } catch (e) {}
+      },
+
+      name: st.name,
+      phone: st.phone,
+      onName: (e) => this.setState({ name: e.target.value }),
+      onPhone: (e) => this.setState({ phone: e.target.value.replace(/\D/g, '').slice(0, 10) }),
+      cannotEnter: !canEnter,
+      enterOpacity: canEnter ? 1 : 0.45,
+      enter: () => { if (canEnter) this.go('done'); },
+
+      hasToast: !!st.toast,
+      toast: st.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

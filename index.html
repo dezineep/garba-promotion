@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4A0A1C">
+<title>Rent a Garba Partner · Modulus Seventeen</title>
+<meta name="description" content="Rent a Garba partner at just ₹69 this Navratri. A Modulus Seventeen special.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/boat-earpods-cut.webp">
+<link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+<div class="app gridbg" id="app">
+  <!-- twinkling lights -->
+  <div class="lights" aria-hidden="true">
+    <span class="lite g" style="left:2%;top:18%"></span>
+    <span class="lite p" style="left:3%;top:34%"></span>
+    <span class="lite g" style="left:1.5%;top:55%"></span>
+    <span class="lite p" style="left:2.5%;top:78%"></span>
+    <span class="lite g" style="right:2%;top:24%"></span>
+    <span class="lite p" style="right:3%;top:44%"></span>
+    <span class="lite g" style="right:1.5%;top:64%"></span>
+    <span class="lite p" style="right:2.5%;top:88%"></span>
+  </div>
+
+  <!-- pinned top: bunting + logo/back + progress -->
+  <div class="topbar gridbg" id="topbar">
+    <!-- bunting -->
+    <svg class="bunting" aria-hidden="true" width="100%" height="36" preserveAspectRatio="none">
+      <defs>
+        <pattern id="flags" width="117" height="36" patternUnits="userSpaceOnUse">
+          <polygon points="0,0 39,0 19.5,30" fill="#FFF1DC"/>
+          <polygon points="39,0 78,0 58.5,30" fill="#FF7A1A"/>
+          <polygon points="78,0 117,0 97.5,30" fill="#FF3D8B"/>
+          <circle cx="39" cy="6" r="5" fill="#FFB81C"/><circle cx="78" cy="6" r="5" fill="#FFB81C"/><circle cx="117" cy="6" r="5" fill="#FFB81C"/><circle cx="0" cy="6" r="5" fill="#FFB81C"/>
+          <circle cx="39" cy="6" r="1.8" fill="#C8105A"/><circle cx="78" cy="6" r="1.8" fill="#C8105A"/><circle cx="117" cy="6" r="1.8" fill="#C8105A"/><circle cx="0" cy="6" r="1.8" fill="#C8105A"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="36" fill="url(#flags)"/>
+    </svg>
+    <header class="top" id="top"></header>
+    <div class="prog-slot" id="prog"></div>
+  </div>
+  <main class="body" id="screen" tabindex="-1"></main>
+
+  <div class="fx" id="fx" aria-hidden="true"></div>
+  <div id="modal-root"></div>
+  <div class="toast-wrap" id="toast" role="status" aria-live="polite"></div>
+</div>
+<script src="app.js?v=3"></script>
+</body>
+</html>
