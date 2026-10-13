@@ -929,3 +929,24 @@ body.m17 .burst .flash{display:none}
 .reveal-card .btn{width:100%}
 .floating-in{animation:float-in .9s var(--ease-spring,cubic-bezier(.34,1.56,.64,1)) both}
 @keyframes float-in{0%{opacity:0;transform:translateY(90px) scale(.4)}60%{opacity:1}100%{opacity:1;transform:none}}
+
+/* ---------- done: the redirect countdown, up front and explained ---------- */
+.redir-card{display:flex;flex-direction:column;gap:12px;padding:16px;background:#fff;border:1px solid #3F4EE3;border-radius:20px;box-shadow:5px 5px 0 #3F4EE3}
+.rd-top{display:flex;align-items:center;gap:14px}
+body.m17 .ring.rd-ring,body.m17 .ring.rd-ring svg{width:64px;height:64px}
+body.m17 .ring.rd-ring circle{stroke-width:3.5}
+body.m17 .ring.rd-ring b{font-weight:700;font-size:24px;color:#261F8E}
+.rd-ring{flex:none;position:relative;border-radius:50%;background:#F1F2FC}
+.rd-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rd-k{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#00A50E}
+.rd-k .dot{background:#00BD10;width:7px;height:7px}
+.rd-txt b{font-weight:600;font-size:16px;line-height:1.3;letter-spacing:-.025em;color:#1A1A1A}
+.rd-txt b span{color:#3F4EE3;white-space:nowrap}
+.rd-why{font-size:13px;line-height:1.5;color:#525252;padding:10px 12px;border-radius:12px;background:#F6F6F9}
+.rd-why b{color:#1A1A1A}
+.rd-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+body.m17 .rd-acts .btn,body.m17 .rd-acts .btn-ghost{min-height:46px;width:100%}
+.redir-card.stopped{border-color:#D2D2D2;box-shadow:4px 4px 0 #D2D2D2}
+.redir-card.stopped .rd-ring{display:none}
+.redir-card.stopped .rd-acts{grid-template-columns:1fr}
+.cele{position:relative;width:24px;height:70px;padding:0}
