@@ -452,15 +452,16 @@
       '<section style="display:flex;flex-direction:column;gap:14px">' + list.map(card).join('') + '</section>';
   };
 
-  function countdownBlock(dark, lead) {
+  function countdownBlock(dark, lead, secs) {
+    secs = secs || CONFIG.redirectSeconds;
     var c = 2 * Math.PI * 19;
     return '<div class="redirect' + (dark ? ' dark' : '') + '" id="redirect">' +
-      '<div class="ring"><svg viewBox="0 0 46 46"><circle class="trk" cx="23" cy="23" r="19"/><circle class="bar" id="ringbar" cx="23" cy="23" r="19" stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="0"/></svg><b id="ringnum">' + CONFIG.redirectSeconds + '</b></div>' +
-      '<p>' + lead + ' <b id="ringtxt">' + CONFIG.redirectSeconds + ' seconds</b>.</p></div>';
+      '<div class="ring"><svg viewBox="0 0 46 46"><circle class="trk" cx="23" cy="23" r="19"/><circle class="bar" id="ringbar" cx="23" cy="23" r="19" stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="0"/></svg><b id="ringnum">' + secs + '</b></div>' +
+      '<p>' + lead + ' <b id="ringtxt">' + secs + ' seconds</b>.</p></div>';
   }
-  function startCountdown(url) {
+  function startCountdown(url, secs) {
     url = typeof url === 'string' ? url : CONFIG.siteUrl;
-    var total = CONFIG.redirectSeconds, left = total, c = 2 * Math.PI * 19;
+    var total = secs || CONFIG.redirectSeconds, left = total, c = 2 * Math.PI * 19;
     var bar = $('#ringbar'), num = $('#ringnum'), txt = $('#ringtxt');
     every(function () {
       left -= 1;
@@ -471,36 +472,69 @@
     }, 1000);
   }
 
+  var BIZ_SECONDS = 20;
   screens.business = function () {
-    var badge = '<span class="flow-badge">' + LOGO + '</span>';
+    var opened = S.bizOpened;
+    return heroPill('Special match', 'for business owners') +
+      head('Jackpot, <span class="ser">Business Owner!</span>', 'Your ' + CONFIG.event + ' partner is the one that runs your shop all year.') +
+      '<div class="gift-stage scr d1" id="bizstage">' +
+        duo('party', { sell: opened ? 'Your partner!' : 'Namaste!', buy: opened ? 'Totally free!' : 'Happy ' + CONFIG.event + '!', mid17: opened
+          ? '<span class="giftbtn open opened" aria-hidden="true">' + GIFT_SVG + '</span>'
+          : '<button class="giftbtn" id="bizgift" data-act="openbiz" aria-label="Open the gift box to reveal your partner">' + GIFT_SVG + '</button>' }) +
+        (opened ? '' : '<button class="outline-chip pbtn" id="biztap" data-act="openbiz">' + I.gift + ' Tap the gift box to reveal your partner</button>') +
+      '</div>' +
+      (opened ? bizReveal(false) : '');
+  };
+  // what's inside: Modulus Seventeen, in plain words, then the countdown and the points
+  function bizReveal(animate) {
     var perks = [
       [ART17.bill, 'Fast billing in rush hour', 'Bill in seconds while the Garba crowd queues up.'],
       [ART17.stock, 'One stock count', 'Online and offline stock in one place.'],
       [ART17.shop, 'Zero commission on BUY', 'Keep what you earn on every order.'],
       [ART17.ride, 'Delivery managed in SELL', 'Assign and track every delivery.']
     ];
-    return heroPill('Special match', 'for business owners') +
-      head('Jackpot, <span class="ser">Business Owner!</span>', 'Your ' + CONFIG.event + ' partner is the one that runs your shop all year.') +
-      '<div class="scene-wrap scr d1" id="bizparty">' + duo('idle', { sell: 'Your partner!', buy: '1 month free!', mid17: '<div class="duo-mid">' + badge + '</div>' }) + '</div>' +
-      '<section class="hc sell scr d2">' +
-        '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + 'Modulus Seventeen</span><span class="hc-sub">One ecosystem for every Indian business</span></div>' +
-        '<div class="hc-right"><small class="hc-cap">Free for</small><span class="hc-amt">1 month</span></div></div>' +
-        '<h2 class="offer">Get <span class="ser">one month free</span> with your partner Modulus Seventeen</h2>' +
-        '<p class="hc-p">Garba season brings the rush. Let your partner handle billing, stock and delivery while you dance till midnight.</p>' +
-        arrowBtn('Claim my free month', 'href="' + CONFIG.siteUrl + '"') +
-        countdownBlock(false, 'Taking you to Modulus Seventeen in') +
+    return '<div class="biz-reveal' + (animate ? ' floating-in' : '') + '" id="bizreveal">' +
+      '<section class="hc sell">' +
+        '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + 'Your business partner</span><span class="paid">Totally free</span></div>' +
+        '<div class="hc-right"><small class="hc-cap">Price</small><span class="hc-amt">₹0</span></div></div>' +
+        '<h2 class="offer">Meet <span class="ser">Modulus Seventeen</span></h2>' +
+        '<p class="hc-p">One app for your shop: billing, stock and delivery, plus your own online store. Totally free to use.</p>' +
+        arrowBtn('Start for free', 'href="' + CONFIG.siteUrl + '"') +
+        countdownBlock(false, 'Taking you to Modulus Seventeen in', BIZ_SECONDS) +
       '</section>' +
-      '<div class="vlist scr d3">' + perks.map(function (p) {
+      '<div class="vlist">' + perks.map(function (p) {
         return '<div class="vcard"><span class="vc-ic">' + p[0] + '</span><span><b>' + p[1] + '</b><small>' + p[2] + '</small></span></div>';
-      }).join('') + '</div>';
-  };
-  // the win: the bots celebrate, a buzz on phones, then the countdown to the site
+      }).join('') + '</div>' +
+    '</div>';
+  }
   screens.business.after = function () {
-    startCountdown();
-    later(function () { botSay('sell', 'Your partner!'); }, 500);
-    later(function () { botSay('buy', '1 month free!'); }, 900);
-    try { if (navigator.vibrate && !reduced) navigator.vibrate([40, 60, 40]); } catch (e) {}
+    if (S.bizOpened) { startCountdown(CONFIG.siteUrl, BIZ_SECONDS); return; }
+    // until the box is opened, the bots dance and keep greeting
+    var lines = { sell: ['Namaste!', 'Kem cho!', 'Open it!', 'Hehe!'], buy: ['Happy ' + CONFIG.event + '!', 'Tap the box!', 'Hahaha!', 'Go on!'] }, k = 0;
+    every(function () {
+      var kind = k++ % 2 ? 'buy' : 'sell';
+      botSay(kind, lines[kind][Math.floor(Math.random() * lines[kind].length)]);
+    }, 1700);
   };
+  function openBizGift() {
+    var btn = $('#bizgift');
+    if (S.bizOpened || !btn || btn.classList.contains('open')) return;
+    btn.classList.add('open');
+    clearTimers();
+    var tap = $('#biztap'); if (tap) tap.remove();
+    botSay('sell', 'Your partner!'); botSay('buy', 'Hahaha, surprise!');
+    later(function () { burstOn(btn, 34, 120, true); }, reduced ? 0 : 420);
+    later(function () { burstOn(btn, 22, 90, true); }, reduced ? 0 : 900);
+    try { if (navigator.vibrate && !reduced) navigator.vibrate([40, 60, 40]); } catch (e) {}
+    later(function () {
+      S.bizOpened = true;
+      $('#bizstage').insertAdjacentHTML('afterend', bizReveal(true));
+      startCountdown(CONFIG.siteUrl, BIZ_SECONDS);
+      if (!reduced) every(blinkSomeone, 2600);
+      var r = $('#bizreveal');
+      if (r && r.getBoundingClientRect().top > window.innerHeight * .6) window.scrollTo({ top: r.getBoundingClientRect().top + window.scrollY - 160, behavior: reduced ? 'auto' : 'smooth' });
+    }, reduced ? 0 : 750);
+  }
 
   screens.radar = function () {
     var pins = [
@@ -571,7 +605,6 @@
         (p.photo ? '<img src="' + esc(p.photo) + '" alt="Your Garba partner">' : stage('dance', { boy: !p.female, girl: p.female, gap: 0 })) +
         '<span class="tap-reveal">' + I.play + 'Tap to reveal</span>' +
       '</button></div>' +
-      '<button class="btn btn-m17 pbtn shine reveal-cta scr d1" data-act="go" data-to="video"><span class="m17mark">' + LOGO + '</span><span class="bt"><small>From Modulus Seventeen</small>Reveal my partner</span><span class="ic">' + I.play + '</span></button>' +
       '<p class="assure scr d1">' + I.shield + 'Free. Nothing to pay, no sign-up.</p>' +
       '<section class="scr d2" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">' +
         '<span class="masked">' + p.masked + '</span>' +
@@ -1189,6 +1222,7 @@
       case 'vote': vote(t.dataset.v, t); break;
       case 'share': share(); break;
       case 'opengift': openGift(); break;
+      case 'openbiz': openBizGift(); break;
       case 'bot': poke(t, BOT_LINES[t.dataset.bot][Math.floor(Math.random() * BOT_LINES[t.dataset.bot].length)]); break;
       case 'participate': participate(); break;
       case 'igopen': S.igOpenedAt = Date.now(); break;   // the "did you follow?" question waits for them to come back
