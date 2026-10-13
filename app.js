@@ -475,37 +475,40 @@
   var BIZ_SECONDS = 20;
   screens.business = function () {
     var opened = S.bizOpened;
+    // the scene fills the rest of the screen and keeps its content centred: the big box first, then the card in its place
     return heroPill('Special match', 'for business owners') +
       head('Jackpot, <span class="ser">Business Owner!</span>', 'Your ' + CONFIG.event + ' partner is the one that runs your shop all year.') +
-      '<div class="gift-stage scr d1" id="bizstage">' +
-        duo('party', { sell: opened ? 'Your partner!' : 'Namaste!', buy: opened ? 'Totally free!' : 'Happy ' + CONFIG.event + '!', mid17: opened
-          ? '<span class="giftbtn open opened" aria-hidden="true">' + GIFT_SVG + '</span>'
-          : '<button class="giftbtn" id="bizgift" data-act="openbiz" aria-label="Open the gift box to reveal your partner">' + GIFT_SVG + '</button>' }) +
-        (opened ? '' : '<button class="outline-chip pbtn" id="biztap" data-act="openbiz">' + I.gift + ' Tap the gift box to reveal your partner</button>') +
+      '<div class="biz-scene scr d1' + (opened ? ' revealed' : '') + '" id="bizscene">' +
+        '<div class="gift-stage" id="bizstage">' +
+          duo('party', { sell: opened ? 'Your partner!' : 'Namaste!', buy: opened ? 'Totally free!' : 'Happy ' + CONFIG.event + '!', mid17: opened
+            ? '<span class="giftbtn open opened" aria-hidden="true">' + GIFT_SVG + '</span>'
+            : '<button class="giftbtn" id="bizgift" data-act="openbiz" aria-label="Open the gift box to reveal your partner">' + GIFT_SVG + '</button>' }) +
+        '</div>' +
+        (opened ? bizCard(false) : '<button class="outline-chip pbtn" id="biztap" data-act="openbiz">' + I.gift + ' Tap the gift box to reveal your partner</button>') +
       '</div>' +
-      (opened ? bizReveal(false) : '');
+      (opened ? bizPerks() : '');
   };
-  // what's inside: Modulus Seventeen, in plain words, then the countdown and the points
-  function bizReveal(animate) {
+  // what's inside: Modulus Seventeen, in plain words, with the countdown
+  function bizCard(animate) {
+    return '<section class="hc sell biz-card' + (animate ? ' floating-in' : '') + '" id="bizreveal">' +
+      '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + 'Your business partner</span><span class="paid">Totally free</span></div>' +
+      '<div class="hc-right"><small class="hc-cap">Price</small><span class="hc-amt">₹0</span></div></div>' +
+      '<h2 class="offer">Meet <span class="ser">Modulus Seventeen</span></h2>' +
+      '<p class="hc-p">One app for your shop: billing, stock and delivery, plus your own online store. Totally free to use.</p>' +
+      arrowBtn('Start for free', 'href="' + CONFIG.siteUrl + '"') +
+      countdownBlock(false, 'Taking you to Modulus Seventeen in', BIZ_SECONDS) +
+    '</section>';
+  }
+  function bizPerks(animate) {
     var perks = [
       [ART17.bill, 'Fast billing in rush hour', 'Bill in seconds while the Garba crowd queues up.'],
       [ART17.stock, 'One stock count', 'Online and offline stock in one place.'],
       [ART17.shop, 'Zero commission on BUY', 'Keep what you earn on every order.'],
       [ART17.ride, 'Delivery managed in SELL', 'Assign and track every delivery.']
     ];
-    return '<div class="biz-reveal' + (animate ? ' floating-in' : '') + '" id="bizreveal">' +
-      '<section class="hc sell">' +
-        '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + 'Your business partner</span><span class="paid">Totally free</span></div>' +
-        '<div class="hc-right"><small class="hc-cap">Price</small><span class="hc-amt">₹0</span></div></div>' +
-        '<h2 class="offer">Meet <span class="ser">Modulus Seventeen</span></h2>' +
-        '<p class="hc-p">One app for your shop: billing, stock and delivery, plus your own online store. Totally free to use.</p>' +
-        arrowBtn('Start for free', 'href="' + CONFIG.siteUrl + '"') +
-        countdownBlock(false, 'Taking you to Modulus Seventeen in', BIZ_SECONDS) +
-      '</section>' +
-      '<div class="vlist">' + perks.map(function (p) {
-        return '<div class="vcard"><span class="vc-ic">' + p[0] + '</span><span><b>' + p[1] + '</b><small>' + p[2] + '</small></span></div>';
-      }).join('') + '</div>' +
-    '</div>';
+    return '<div class="vlist' + (animate ? ' fade-up' : '') + '" id="bizperks">' + perks.map(function (p) {
+      return '<div class="vcard"><span class="vc-ic">' + p[0] + '</span><span><b>' + p[1] + '</b><small>' + p[2] + '</small></span></div>';
+    }).join('') + '</div>';
   }
   screens.business.after = function () {
     if (S.bizOpened) { startCountdown(CONFIG.siteUrl, BIZ_SECONDS); return; }
@@ -521,19 +524,21 @@
     if (S.bizOpened || !btn || btn.classList.contains('open')) return;
     btn.classList.add('open');
     clearTimers();
-    var tap = $('#biztap'); if (tap) tap.remove();
+    var tap = $('#biztap'); if (tap) tap.classList.add('gone');   // fades out in place, so nothing jumps
     botSay('sell', 'Your partner!'); botSay('buy', 'Hahaha, surprise!');
-    later(function () { burstOn(btn, 34, 120, true); }, reduced ? 0 : 420);
-    later(function () { burstOn(btn, 22, 90, true); }, reduced ? 0 : 900);
+    later(function () { burstOn(btn, 34, 120, true); }, reduced ? 0 : 380);
+    later(function () { burstOn(btn, 22, 90, true); }, reduced ? 0 : 640);
     try { if (navigator.vibrate && !reduced) navigator.vibrate([40, 60, 40]); } catch (e) {}
     later(function () {
       S.bizOpened = true;
-      $('#bizstage').insertAdjacentHTML('afterend', bizReveal(true));
+      var scene = $('#bizscene');
+      scene.classList.add('revealed');                 // the box shrinks away, the bots step closer
+      if (tap) tap.remove();
+      scene.insertAdjacentHTML('beforeend', bizCard(true));   // the card takes the box's place, in the middle of the screen
+      scene.insertAdjacentHTML('afterend', bizPerks(true));
       startCountdown(CONFIG.siteUrl, BIZ_SECONDS);
       if (!reduced) every(blinkSomeone, 2600);
-      var r = $('#bizreveal');
-      if (r && r.getBoundingClientRect().top > window.innerHeight * .6) window.scrollTo({ top: r.getBoundingClientRect().top + window.scrollY - 160, behavior: reduced ? 'auto' : 'smooth' });
-    }, reduced ? 0 : 750);
+    }, reduced ? 0 : 900);
   }
 
   screens.radar = function () {
