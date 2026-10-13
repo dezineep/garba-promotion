@@ -863,3 +863,25 @@ body.m17 .foot .foot-logo{color:#000}
 .foot-brand b{font-weight:600;font-size:15px;letter-spacing:-.03em;color:#000}
 body.m17 .sheet-body .stage.duo{margin-top:10px}
 @media (max-width:360px){.hero-pill{font-size:10.5px;gap:6px;padding:5px 10px}}
+
+/* ---------- giveaway entry: small prize, then 1 follow / 2 details in one card ---------- */
+.prize-strip{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;background:#fff;border:1px solid #D2D2D2;border-radius:16px;box-shadow:3px 3px 0 #D2D2D2}
+.prize-strip .gw-img{width:56px;height:56px;border-radius:12px;background:#F6F6F9;border:0}
+.prize-strip .gw-name{flex:1}
+.prize-strip .gw-name b{font-size:14.5px}
+.ps-r{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.ps-r b{font-weight:600;font-size:16px;color:#000;white-space:nowrap}
+.idea.entry{gap:12px}
+.es{display:flex;align-items:flex-start;gap:12px}
+.es-n{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:28px;background:#3F4EE3;color:#fff;font-weight:600;font-size:13px}
+.es-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.es-t b{font-weight:600;font-size:16px;line-height:1.25;letter-spacing:-.025em;color:#1A1A1A}
+.es-t small{font-size:12.5px;line-height:1.4;color:#525252}
+.es-sep{height:1px;margin:4px 0;background:repeating-linear-gradient(90deg,#C0C0C0 0 11px,transparent 11px 22px)}
+.follow-box{display:flex;flex-direction:column;gap:8px}
+.followed{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:12px;background:rgba(0,189,16,.1);color:#00A50E;font-size:12.5px;font-weight:600}
+.followed svg{flex:none;width:12px;height:12px}
+.field .opt{font-weight:400;color:#A6A6B2}
+body.m17 .idea.entry .field{gap:5px}
+body.m17 .idea.entry .field input,body.m17 .idea.entry .phone-row .cc{height:48px}
+.btn[disabled]{opacity:.6;cursor:progress}
