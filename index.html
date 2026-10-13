@@ -13,8 +13,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="/garba/assets/noise-airwave-max-4-cut.webp">
-<link rel="stylesheet" href="/garba/styles.css?v=11">
+<script>
+  // Asset paths below are relative, so the page works at a site root (garba-promotion.vercel.app/)
+  // and inside a folder. Served as "/garba" with no trailing slash, they would resolve from the
+  // site root, so point the base at the folder instead.
+  (function () {
+    var p = location.pathname;
+    if (p !== '/' && !/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) {
+      var b = document.createElement('base'); b.href = p + '/'; document.head.appendChild(b);
+    }
+  })();
+</script>
+<link rel="preload" as="image" href="assets/noise-airwave-max-4-cut.webp">
+<link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 <div class="app gridbg" id="app">
@@ -55,6 +66,6 @@
   <div id="modal-root"></div>
   <div class="toast-wrap" id="toast" role="status" aria-live="polite"></div>
 </div>
-<script src="/garba/app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>
