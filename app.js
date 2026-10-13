@@ -1065,9 +1065,15 @@
   screens.done = function () {
     var first = esc(S.name.split(' ')[0] || 'friend');
     var entry = esc(S.entryNumber);
-    return heroPill('Entry confirmed', CONFIG.event + ' giveaway') +
+    var c = (2 * Math.PI * 19).toFixed(2);
+    return '<section class="redir-card scr" id="redircard">' +
+        '<div class="rd-top"><div class="ring rd-ring"><svg viewBox="0 0 46 46"><circle class="trk" cx="23" cy="23" r="19"/><circle class="bar" id="ringbar" cx="23" cy="23" r="19" stroke-dasharray="' + c + '" stroke-dashoffset="0"/></svg><b id="ringnum">' + CONFIG.redirectSeconds + '</b></div>' +
+        '<div class="rd-txt"><span class="rd-k"><span class="dot"></span>Entry saved · redirecting</span><b id="rdline">Taking you to Modulus Seventeen in <span id="ringtxt">' + CONFIG.redirectSeconds + ' seconds</span></b></div></div>' +
+        '<p class="rd-why" id="rdwhy"><b>Why?</b> Your entry is saved and there\'s nothing more to do. Modulus Seventeen runs this giveaway, so while you wait for the draw we\'re showing you what we build for Indian businesses. You can come back here any time.</p>' +
+        '<div class="rd-acts" id="rdacts"><a class="btn btn-dark pbtn" href="' + CONFIG.siteUrl + '">Go now</a><button class="btn-ghost pbtn" data-act="stay">Stay here</button></div>' +
+      '</section>' +
       head('You\'re In, <span class="ser">' + first + '!</span>', 'Your entry is locked for the ' + CONFIG.event + ' giveaway.') +
-      '<div class="scene-wrap scr d1">' + duo('cheer', { sell: 'You\'re in!', buy: 'Good luck!' }) + '</div>' +
+      '<div class="scene-wrap scr d1">' + duo('party', { sell: 'You\'re in!', buy: 'Good luck!', mid17: '<span class="duo-mid cele" id="cele"></span>' }) + '</div>' +
       '<section class="hc sell scr d1">' +
         '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + 'Entry confirmed</span><span class="paid">' + I.check + ' Saved</span></div>' +
         '<div class="hc-right"><small class="hc-cap">Entry no.</small><span class="hc-amt entry-no">' + entry + '</span></div></div>' +
@@ -1084,11 +1090,24 @@
         '<p class="cta-sub">Free to start on SELL · Zero commission on BUY orders</p>' +
         arrowBtn('Get Started with SELL', 'href="' + CONFIG.siteUrl + '"') +
         '<a class="btn-ghost pbtn" href="' + CONFIG.siteUrl + '">Explore BUY</a>' +
-        countdownBlock(false, 'Taking you to Modulus Seventeen in') +
       '</section>' +
       '<button class="btn-ghost light pbtn scr d4" data-act="share"><span class="lbl">' + I.share + ' Share with your Garba gang</span></button>';
   };
-  screens.done.after = function () { confetti(true); startCountdown(); };
+  // the countdown, then the party: a pixel burst between the bots, twice
+  screens.done.after = function () {
+    startCountdown();
+    [350, 1300].forEach(function (ms) { later(function () { burstOn($('#cele'), 26, 95, true); }, ms); });
+  };
+  // "Stay here": stop the redirect and say so
+  function stayHere() {
+    clearTimers();
+    if (!reduced) every(blinkSomeone, 2600);
+    var card = $('#redircard'); if (!card) return;
+    card.classList.add('stopped');
+    $('#rdline').textContent = 'Redirect stopped. You\'re staying here.';
+    $('#rdwhy').innerHTML = 'Visit Modulus Seventeen whenever you like. Your entry stays saved either way.';
+    $('#rdacts').innerHTML = '<a class="btn btn-dark pbtn" href="' + CONFIG.siteUrl + '">Visit Modulus Seventeen</a>';
+  }
 
   /* ---------------- fx ---------------- */
   function confetti(on, ms) {
@@ -1172,6 +1191,7 @@
       case 'fyes': answerFollow(true); break;
       case 'fno': answerFollow(false); break;
       case 'mclose': closeModal(); break;
+      case 'stay': stayHere(); break;
       case 'overlay': if (e.target === t) { closeModal(); } break;
     }
   });
