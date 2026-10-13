@@ -68,8 +68,6 @@
     takedownAt: 1000,
     redirectSeconds: 15,
     prize: { name: 'Noise Airwave Max 4 Headphones', worth: '₹1,700', image: 'assets/noise-airwave-max-4-cut.webp' },
-    // Coming back from Instagram faster than this (ms) counts as "didn't follow".
-    minFollowAwayMs: 4000,
     campaign: 'Garba',
     // Local preview talks to a local backend; the live site talks to production.
     apiBase: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:5500/api/' : 'https://api.modulusseventeen.com/api/'
@@ -309,7 +307,8 @@
   var S = {
     screen: 'age', watched: false, gender: null, prof: null, step: 0, playing: false,
     // the name and entry number are kept in this browser, so the form is prefilled and nobody can enter twice from here
-    vote: store('m17-garba-vote') || null, name: store('m17-garba-name') || '', phone: store('m17-garba-phone') || '', giftOpened: false,
+    vote: store('m17-garba-vote') || null, name: store('m17-garba-name') || '', phone: store('m17-garba-phone') || '', ig: store('m17-garba-ig') || '',
+    followed: ({ yes: true, no: false })[store('m17-garba-followed')],   // undefined until they answer, once giftOpened: false,
     entered: !!store('m17-garba-entry'),
     modal: null, igOpenedAt: 0, entryNumber: (store('m17-garba-entry') || '').replace(/^1$/, ''), saving: false, source: scanSource(),
     crowd: { likes: 0, dislikes: 0, shares: 0 }   // real totals from the backend, added on top of the seeds
@@ -385,7 +384,7 @@
 
   screens.age = function () {
     return '<div class="hero scr"><div class="hero-type anton"><span class="a">Find a</span><span class="b">Garba</span><span class="c">Partner</span></div>' +
-      '<div class="price"><span>FREE</span><b>30-second ' + CONFIG.event + ' game</b></div>' +
+      '<div class="price"><span>FREE</span></div>' +
       '<p class="byline"><span class="by-mark">' + LOGO + '</span>by Modulus Seventeen</p></div>' +
       stage('dance', { mid: hearts() }) +
       '<section class="card scr d3" style="display:flex;flex-direction:column;gap:10px">' +
@@ -851,14 +850,6 @@
       return '<li><span class="qa-n">0' + (i + 1) + '</span><span><b>' + r[0] + '</b><small>' + r[1] + '</small></span></li>';
     }).join('') + '</ol>';
   }
-  function howItWorks() {
-    return '<h3 class="mini-title scr d2">How it <span class="ser">works</span></h3>' + qaList([
-      ['Enter your details', 'Your name and mobile number. Only used to reach the winner.'],
-      ['Follow ' + CONFIG.instagramHandle, 'On Instagram, to confirm your entry.'],
-      ['Watch for the winner', 'We announce it on our Instagram page.' + (CONFIG.closesOn ? ' Closes ' + CONFIG.closesOn + '.' : '')]
-    ]);
-  }
-
   screens.giveaway = function () {
     var pill = heroPill('Official giveaway', 'by Modulus Seventeen');
     if (S.entered) {
@@ -877,16 +868,31 @@
         '</div>' +
         '<div class="trust scr d2"><span>' + I.check + 'Free to enter</span><span>' + I.check + 'No purchase needed</span><span>' + I.check + 'Winner on Instagram</span></div>';
     }
-    return pill + head('You Could <span class="ser">Win This</span>', 'Enter your name, follow us on Instagram and you\'re in the draw.') +
-      prizeCard() + howItWorks() +
-      '<section class="idea scr d3">' +
-        '<div class="idea-head"><h3>Enter the giveaway</h3><p>One entry per mobile number.</p></div>' +
-        '<div class="field"><label for="gw-name">Your name</label><input id="gw-name" type="text" autocomplete="name" maxlength="40" placeholder="e.g. Riya Shah" value="' + esc(S.name) + '"><span class="hint">This is the name we\'ll announce if you win.</span></div>' +
-        '<div class="field"><label for="gw-phone">Mobile number</label><div class="phone-row"><span class="cc">+91</span><input id="gw-phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit mobile number" value="' + esc(S.phone) + '"></div><span class="hint">Only used to reach the winner.</span></div>' +
+    return pill + head('Enter the <span class="ser">Giveaway</span>') +
+      prizeStrip() +
+      '<section class="idea entry scr d2">' +
+        '<div class="es"><span class="es-n">1</span><span class="es-t"><b>Follow ' + CONFIG.instagramHandle + '</b><small>We check every entry by hand before the draw.</small></span></div>' +
+        followBox() +
+        '<div class="es-sep"></div>' +
+        '<div class="es"><span class="es-n">2</span><span class="es-t"><b>Your details</b><small>Only used to reach the winner. One entry per number.</small></span></div>' +
+        '<div class="field"><label for="gw-name">Your name</label><input id="gw-name" type="text" autocomplete="name" maxlength="40" placeholder="e.g. Riya Shah" value="' + esc(S.name) + '"></div>' +
+        '<div class="field"><label for="gw-phone">Mobile number</label><div class="phone-row"><span class="cc">+91</span><input id="gw-phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit mobile number" value="' + esc(S.phone) + '"></div></div>' +
+        '<div class="field"><label for="gw-ig">Instagram handle <span class="opt">(optional)</span></label><div class="phone-row"><span class="cc">@</span><input id="gw-ig" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" maxlength="31" placeholder="yourhandle" value="' + esc(S.ig) + '"></div></div>' +
         '<button class="btn btn-dark pbtn idea-btn" id="participate" data-act="participate"><span>Participate Now</span></button>' +
-        '<div class="ig-line"><span class="ig-dot">' + I.ig + '</span><span>Follow <b style="color:var(--ink)">' + CONFIG.instagramHandle + '</b> on Instagram to confirm your entry</span></div>' +
       '</section>';
   };
+
+  // the prize, small: it was already shown big on the video screen and when the box opened
+  function prizeStrip() {
+    return '<div class="prize-strip scr d1"><span class="gw-img"><img src="' + CONFIG.prize.image + '" alt="" width="581" height="720"></span>' +
+      '<span class="gw-name"><small>Giveaway prize</small><b>' + esc(CONFIG.prize.name) + '</b></span>' +
+      '<span class="ps-r"><b>' + CONFIG.prize.worth + '</b><span class="off-chip">Free</span></span></div>';
+  }
+  function followBox() {
+    return '<div class="follow-box" id="followbox">' +
+      (S.followed ? '<p class="followed">' + I.check + 'Thanks for following! We\'ll verify it before the draw.</p>' : '') +
+      '<a class="btn btn-ig pbtn" href="' + CONFIG.instagramUrl + '" target="_blank" rel="noopener" data-act="igopen"><span>' + (S.followed ? 'Open our Instagram' : 'Follow on Instagram') + '</span><span class="ic">' + I.igBig + '</span></a></div>';
+  }
 
   // the prize as one of the BUY store's product cards
   function prizeCard() {
@@ -947,84 +953,68 @@
     if (v.length < 2) return fail(inp, 'Add your name so we know who to announce!');
     S.phone = cleanPhone(ph.value);
     if (!/^[6-9]\d{9}$/.test(S.phone)) return fail(ph, 'Enter a valid 10-digit mobile number.');
+    var ig = $('#gw-ig');
+    S.ig = cleanIg(ig ? ig.value : S.ig);
     store('m17-garba-name', v);
     store('m17-garba-phone', S.phone);
-    openModal('ask');
+    store('m17-garba-ig', S.ig || null);
+    enterGiveaway();
   }
+  // an Instagram username: letters, digits, dots and underscores, up to 30 (a typed @ is dropped)
+  function cleanIg(raw) { return String(raw || '').trim().replace(/^@+/, '').replace(/[^A-Za-z0-9._]/g, '').slice(0, 30); }
 
-  /* ---------- Instagram gate modal ---------- */
-  var NOPE = [
-    { t: 'Uh-oh, the dandiya didn\'t click!', p: 'Looks like you came back without tapping Follow. Our dancers are still holding a spot in the circle for you.', b: 'Psst… we can\'t start the Garba without you.' },
-    { t: 'Plot twist: no follow detected', p: 'You zipped back faster than a dandiya spin! The follow button is still waiting for its partner.', b: 'One tap. Two seconds. Zero regrets.' },
-    { t: 'Our radar missed your follow', p: 'Maybe the Instagram app was being shy? Give it one more try and your entry is locked in.', b: 'The prize is literally waving at you.' }
-  ];
-  var nopeIdx = 0;
-
+  /* ---------- "did you follow?": asked once, when they come back from Instagram. Follows are checked by hand. ---------- */
   function openModal(state) { S.modal = state; renderModal(); }
   function closeModal(silent) {
     S.modal = null;
     modalRoot.innerHTML = '';
     document.body.style.overflow = '';
-    if (!silent) { var p = $('#participate'); if (p) p.focus(); }
+    if (!silent) { var p = $('#participate'); if (p) p.focus({ preventScroll: true }); }
   }
   function renderModal() {
     if (!S.modal) { closeModal(true); return; }
     document.body.style.overflow = 'hidden';
-    var name = esc(S.name.split(' ')[0] || 'friend');
-    var igCardInner = '<span class="ig-av"><span>' + LOGO + '</span></span><span style="flex:1;min-width:0"><b>' + CONFIG.instagramHandle + '</b><small>Modulus Seventeen · ' + CONFIG.event + ' giveaway</small></span>';
-    var igCard = '<div class="ig-card">' + igCardInner + '</div>';
-    // on the "no follow detected" step the card itself opens Instagram, since the main button is now "Done"
-    var igCardLink = '<a class="ig-card" href="' + CONFIG.instagramUrl + '" target="_blank" rel="noopener" data-act="igopen">' + igCardInner + '</a>';
-    var followBtn = '<a class="btn btn-ig pbtn shine" href="' + CONFIG.instagramUrl + '" target="_blank" rel="noopener" data-act="igopen"><span>Follow on Instagram</span><span class="ic">' + I.igBig + '</span></a>';
-    var body = '';
-    if (S.modal === 'ask') {
-      body = stage('wave', { gap: 4, mid: '<div class="heartmid" style="height:60px">' + heart(isM17() ? '#A52226' : '#FF3D8B', 22, 19, 'beat') + '</div>' }) +
-        '<h2 id="mtitle">One tiny step, ' + name + '!</h2>' +
-        '<p>Follow us on Instagram to lock in your entry. That\'s also where we announce the winner.</p>' +
-        igCard + followBtn +
-        '<button class="btn-ghost pbtn" data-act="igalready">I already follow you</button>';
-    } else if (S.modal === 'waiting') {
-      body = stage('idle', { gap: 30 }) +
-        '<h2 id="mtitle">See you on Instagram!</h2>' +
-        '<p>Tap <b>Follow</b> on our page, then come back here. We\'ll be right here.</p>' +
-        '<div class="waiting"><span class="spin-s"></span>Waiting for you to come back…</div>' +
-        followBtn +
-        '<button class="btn-ghost pbtn" data-act="igback">Done</button>';
-    } else if (S.modal === 'confirm') {
-      body = stage('cheer', { gap: 4, mid: '<div class="heartmid" style="height:60px">' + heart(isM17() ? '#A52226' : '#FF3D8B', 22, 19, 'beat') + '</div>' }) +
-        '<h2 id="mtitle">Welcome back! Did you hit Follow?</h2>' +
-        '<p>Just checking before we lock your entry for the <b>' + esc(CONFIG.prize.name) + '</b>.</p>' +
-        '<button class="btn btn-mag pbtn shine" data-act="igyes"><span>Yes, I followed!</span><span class="ic">' + I.check.replace('width="13" height="13"', 'width="18" height="18"') + '</span></button>' +
-        '<button class="btn-ghost pbtn" data-act="ignope">Not yet</button>';
-    } else if (S.modal === 'nope') {
-      var n = NOPE[nopeIdx % NOPE.length];
-      body = '<div class="bubble">' + n.b + '</div>' + stage('sad', { gap: 26 }) +
-        '<h2 id="mtitle">' + n.t + '</h2>' +
-        '<p>' + n.p + '</p>' +
-        igCardLink +
-        '<button class="btn btn-mag pbtn shine" data-act="igback"><span>Done</span><span class="ic">' + I.check.replace('width="13" height="13"', 'width="18" height="18"') + '</span></button>' +
-        '<button class="btn-ghost pbtn" data-act="iglater">I\'ll do it later</button>';
-    }
+    var body = stage('wave') +
+      '<h2 id="mtitle">Did you follow ' + CONFIG.instagramHandle + '?</h2>' +
+      '<p>Just tell us once. We check every entry by hand before picking the winner.</p>' +
+      '<button class="btn btn-dark pbtn" data-act="fyes"><span>Yes, I followed</span></button>' +
+      '<button class="btn-ghost pbtn" data-act="fno">Not yet</button>';
     modalRoot.innerHTML = '<div class="overlay" data-act="overlay"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mtitle"><div class="grab"></div>' +
-      '<button class="x" data-act="iglater" aria-label="Close">' + I.x + '</button><div class="sheet-body">' + body + '</div></div></div>';
-    var first = $('.sheet .btn, .sheet a', modalRoot); if (first) first.focus({ preventScroll: true });
+      '<button class="x" data-act="mclose" aria-label="Close">' + I.x + '</button><div class="sheet-body">' + body + '</div></div></div>';
+    var first = $('.sheet .btn', modalRoot); if (first) first.focus({ preventScroll: true });
+  }
+  function answerFollow(yes) {
+    S.followed = yes;
+    store('m17-garba-followed', yes ? 'yes' : 'no');
+    closeModal(true);
+    var box = $('#followbox'); if (box) box.outerHTML = followBox();
+    toast(yes ? 'Thanks! We\'ll verify it before the draw.' : 'No problem. Follow any time before the draw.');
+    if (yes) botSay('sell', 'Thank you!');
   }
   function onIgReturn() {
-    if (S.modal !== 'waiting' || !S.igOpenedAt) return;
-    var away = Date.now() - S.igOpenedAt;
+    if (!S.igOpenedAt || Date.now() - S.igOpenedAt < 1000) return;
     S.igOpenedAt = 0;
-    if (away < CONFIG.minFollowAwayMs) { nopeIdx++; openModal('nope'); }
-    else openModal('confirm');
+    if (S.followed !== undefined || S.screen !== 'giveaway' || S.entered) return;
+    openModal('follow');
   }
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(onIgReturn, 250); });
-  window.addEventListener('focus', function () { setTimeout(onIgReturn, 250); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(onIgReturn, 300); });
+  window.addEventListener('focus', function () { setTimeout(onIgReturn, 300); });
 
   function enterGiveaway() {
     if (S.saving) return;
     S.saving = true;
+    var btn = $('#participate'); if (btn) { btn.disabled = true; btn.firstChild.textContent = 'Saving…'; }
     var body = { name: S.name.trim(), countryCode: '91', nationalNumber: S.phone, visitorId: visitorId() };
     if (S.source) body.source = S.source;
-    api('POST', '/entry', body).then(function (d) {
+    var extra = {};
+    if (S.ig) extra.instagramHandle = S.ig;
+    if (S.followed !== undefined) extra.instagramFollowed = S.followed;
+    var withExtra = Object.assign({}, body, extra);
+    api('POST', '/entry', withExtra).catch(function (e) {
+      // 400 = the backend rejected the new fields: never lose the entry over them
+      if (e && e.status === 400 && Object.keys(extra).length) return api('POST', '/entry', body);
+      throw e;
+    }).then(function (d) {
       S.saving = false;
       S.entered = true;
       S.entryNumber = d.entryNumber || '';
@@ -1034,6 +1024,7 @@
     }, function (e) {
       S.saving = false;
       closeModal(true);
+      var b2 = $('#participate'); if (b2) { b2.disabled = false; b2.firstChild.textContent = 'Participate Now'; }
       // 409 = this phone number or this device is already in: say so instead of "check your connection"
       toast(e && e.status === 409 ? e.message : 'Could not save your entry. Check your connection and try again.');
     });
@@ -1146,29 +1137,22 @@
       case 'opengift': openGift(); break;
       case 'bot': poke(t, BOT_LINES[t.dataset.bot][Math.floor(Math.random() * BOT_LINES[t.dataset.bot].length)]); break;
       case 'participate': participate(); break;
-      case 'igopen':
-        S.igOpenedAt = Date.now();
-        if (S.modal !== 'waiting') { later(function () { openModal('waiting'); }, 60); }
-        break;
-      case 'igalready': enterGiveaway(); break;   // already a follower: straight to the congrats page
-      case 'igback': S.igOpenedAt = 0; openModal('confirm'); break;   // "Done": on to "Yes, I followed!"
-      case 'igyes': enterGiveaway(); break;
-      case 'ignope': nopeIdx++; openModal('nope'); break;
-      case 'iglater':
-        closeModal();
-        toast('No stress! Your name is saved, come back anytime.');
-        break;
+      case 'igopen': S.igOpenedAt = Date.now(); break;   // the "did you follow?" question waits for them to come back
+      case 'fyes': answerFollow(true); break;
+      case 'fno': answerFollow(false); break;
+      case 'mclose': closeModal(); break;
       case 'overlay': if (e.target === t) { closeModal(); } break;
     }
   });
   document.addEventListener('input', function (e) {
     if (e.target.id === 'gw-name') { S.name = e.target.value; e.target.classList.remove('err'); }
     if (e.target.id === 'gw-phone') { e.target.value = cleanPhone(e.target.value).slice(0, 10); S.phone = e.target.value; e.target.classList.remove('err'); }
+    if (e.target.id === 'gw-ig') { S.ig = e.target.value; }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && S.modal) closeModal();
     if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('bot')) { e.preventDefault(); e.target.click(); }
-    if (e.key === 'Enter' && (e.target.id === 'gw-name' || e.target.id === 'gw-phone')) { e.preventDefault(); participate(); }
+    if (e.key === 'Enter' && (e.target.id === 'gw-name' || e.target.id === 'gw-phone' || e.target.id === 'gw-ig')) { e.preventDefault(); participate(); }
   });
 
   /* ---------- pinned top shadow ---------- */
