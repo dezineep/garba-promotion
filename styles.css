@@ -99,6 +99,10 @@ body.kb .body{padding-bottom:60vh}
 .btn:hover .ic svg{animation:nudge .6s ease}
 .btn-ghost{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border:1.5px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;text-decoration:none}
 .btn-ghost.light{border-color:rgba(255,245,230,.6);color:var(--cream);background:rgba(255,245,230,.05)}
+.btn-ghost.has-count{flex-direction:column;gap:2px;padding:9px 16px}
+.btn-ghost .lbl{display:flex;align-items:center;gap:10px}
+.btn-ghost .share-count{font-size:12px;font-weight:500;opacity:.75}
+.btn-ghost .share-count b{font-weight:700;opacity:1}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
 .btn.shine{position:relative;overflow:hidden}
 .btn.shine::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.8s ease-in-out infinite}
@@ -184,6 +188,7 @@ body.kb .body{padding-bottom:60vh}
 .awning{animation:awn 2s ease-in-out infinite;transform-origin:8px 3px;transform-box:view-box}
 
 /* ---------- business ---------- */
+.biz-party{position:relative}
 .biz-badge{align-self:center;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:var(--cream);color:var(--ink);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--gold);font-size:13px;font-weight:700}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);animation:pulse 1.4s ease-in-out infinite}
 .m17chip{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 10px;background:var(--cream);color:var(--ink);border:1.5px solid var(--ink);border-radius:12px;box-shadow:2px 2px 0 var(--gold);animation:beat 1.6s ease-in-out infinite}
@@ -261,11 +266,32 @@ body.kb .body{padding-bottom:60vh}
 /* ---------- video ---------- */
 .vid{position:relative;align-self:stretch;width:100%;aspect-ratio:16/9;border:1.5px solid var(--ink);border-radius:24px;box-shadow:5px 5px 0 var(--gold);overflow:hidden;background:var(--ink)}
 .vid video{width:100%;height:100%;object-fit:cover;display:block}
+.vid iframe{width:100%;height:100%;border:0;display:block}
 .vid .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background-color:var(--bg-deep)}
 .vid .lbl{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:999px;background:var(--magenta);color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em}
-.play{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--ink);background:var(--gold);color:var(--ink);display:grid;place-items:center;box-shadow:3px 3px 0 var(--pink);padding:0;animation:pulse 1.6s ease-in-out infinite}
-.vid .vtrack{position:absolute;left:12px;right:12px;bottom:12px;height:4px;border-radius:99px;background:rgba(255,245,230,.25);overflow:hidden}
-.vbar{display:block;height:100%;background:var(--gold);animation:vprog 9s linear infinite;transform-origin:0 50%}
+/* the partner reveal as text (until the video is ready): script on top, the mascots mocking below, progress at the foot */
+.vid.has-script{aspect-ratio:auto}
+.vid .ph.script{position:relative;inset:auto;align-items:stretch;justify-content:flex-start;gap:14px;padding:50px 16px 16px;text-align:left}
+.sc-wrap{display:grid}
+.sc-part{grid-area:1/1;display:flex;flex-direction:column;gap:8px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .45s,transform .45s,visibility .45s}
+.sc-part.on{opacity:1;visibility:visible;transform:none}
+.sc-tag{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.sc-text{font-size:15px;line-height:1.55;color:var(--cream)}
+.sc-mascots{display:flex;align-items:flex-end;justify-content:center;gap:6px}
+.sc-mascots .stage{--cs:60px;flex:none}
+.mock{flex:1;min-width:0;max-width:40%;align-self:center;padding:7px 10px;border:1.5px solid var(--ink);border-radius:12px 12px 12px 4px;background:var(--cream);color:var(--ink);font-size:12px;font-weight:700;line-height:1.25;text-align:left;box-shadow:2px 2px 0 var(--pink)}
+.mock.buy{border-radius:12px 12px 4px 12px;text-align:right}
+.mock.pop{animation:mockpop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes mockpop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.sc-ctl{display:flex;align-items:center;gap:10px}
+.sc-play{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1.5px solid var(--ink);background:var(--gold);color:var(--ink);padding:0}
+.sc-bars{display:flex;flex:1;gap:6px}
+.sc-bar{flex:1;height:18px;padding:0;border:0;background:none;display:flex;align-items:center}
+.sc-bar i{display:block;width:100%;height:5px;border-radius:99px;background:linear-gradient(var(--gold),var(--gold)) no-repeat left/0 100% rgba(255,245,230,.25)}
+.sc-bar.done i{background-size:100% 100%}
+.sc-bar.on i{animation:scfill var(--dur,8s) linear forwards}
+.script.paused .sc-bar.on i{animation-play-state:paused}
+@keyframes scfill{from{background-size:0 100%}to{background-size:100% 100%}}
 
 .shield{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:22px}
 .shield-head{display:flex;align-items:center;gap:10px}
@@ -351,6 +377,11 @@ body.kb .body{padding-bottom:60vh}
 .sheet h2{font-size:clamp(22px,6.4vw,26px);line-height:1.2;font-weight:800;letter-spacing:-.02em}
 .sheet p{font-size:14.5px;line-height:1.5;color:var(--muted-2)}
 .ig-card{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:18px;border:1.5px solid var(--ink);background:#fff;text-align:left}
+a.ig-card{color:inherit;text-decoration:none}
+.phone-row{display:flex;align-items:center;gap:8px}
+.phone-row .cc{flex:none;display:grid;place-items:center;height:52px;padding:0 14px;border:1.5px solid var(--ink);border-radius:14px;background:var(--cream);color:var(--ink);font-size:16px;font-weight:700}
+.phone-row input{flex:1;min-width:0}
+.field input[type=tel].err,.phone-row input.err{animation:shakex .4s ease;border-color:var(--magenta)}
 .ig-av{flex:none;width:50px;height:50px;border-radius:50%;padding:3px;background:conic-gradient(#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75);animation:spin 6s linear infinite}
 .ig-av span{width:100%;height:100%;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;border:2px solid #fff;animation:spin 6s linear infinite reverse}
 .ig-av svg{width:28px;height:auto}
@@ -432,7 +463,6 @@ body.kb .body{padding-bottom:60vh}
 @keyframes ping{0%{transform:scale(.15);opacity:.9}100%{transform:scale(1);opacity:0}}
 @keyframes pop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes dotfade{0%,20%{opacity:0}40%,80%{opacity:1}100%{opacity:0}}
-@keyframes vprog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes tilt{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(-1deg) translateY(-3px)}}
 @keyframes flutter{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.9)}}
 @keyframes glow{0%,100%{box-shadow:0 0 0 rgba(255,184,28,0)}50%{box-shadow:0 0 14px rgba(255,184,28,.45)}}
@@ -473,3 +503,363 @@ body.kb .body{padding-bottom:60vh}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .fh,.ping,.conf{display:none}
 }
+
+/* =====================================================================
+   Added: authenticity pass
+   1) small additions to the Garba look (before the match)
+   2) the Modulus Seventeen look (body.m17): everything from the reveal on
+   ===================================================================== */
+
+/* ---------- Garba look: brand + trust touches ---------- */
+.price span{font-size:26px}
+.price b{font-size:14px}
+.byline{display:inline-flex;align-items:center;gap:8px;margin-top:2px;font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--soft)}
+.byline .by-mark{display:block;color:var(--cream)}
+.byline .by-mark svg{height:20px;width:auto}
+.assure{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;line-height:1.4;color:var(--soft);text-align:center}
+.assure svg{flex:none;width:16px;height:16px;color:var(--gold)}
+.assure.dark{color:var(--muted)}
+.assure.dark svg{color:var(--magenta)}
+.foot{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:2px var(--gutter) 22px;font-size:11.5px;line-height:1.4;color:rgba(255,245,230,.62);text-align:left}
+.foot .foot-logo{flex:none;color:var(--cream);display:block}
+.foot .foot-logo svg{height:22px;width:auto}
+.foot a{color:inherit;text-underline-offset:2px}
+.foot a:hover{color:var(--gold-2)}
+
+/* the branded "reveal" button on the match screen */
+.btn-m17{background:#261F8E;color:#fff;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--gold);padding-left:8px;gap:12px}
+.btn-m17:hover{color:#fff}
+.btn-m17 .m17mark{flex:none;width:40px;height:40px;border-radius:12px;background:#fff;color:#261F8E;display:grid;place-items:center}
+.btn-m17 .m17mark svg{width:26px;height:auto}
+.btn-m17 .bt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.btn-m17 .bt small{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;opacity:.78}
+.btn-m17 .ic{background:#fff;color:#261F8E}
+
+/* =====================================================================
+   Modulus Seventeen look (body.m17): every screen after the match.
+   Built from modulusseventeen.com's own CSS: tokens, nav pill, hero pill, order cards (hcard),
+   stepper, value cards, FAQ list, suggestion form, final CTA and the SELL / BUY pixel bots.
+   Motion follows the site: spring easing for UI, whole-pixel steps for the bots.
+   ===================================================================== */
+body.m17{
+  --sell:#261F8E; --sell-b:#3F4EE3; --buy:#A52226; --title:#4C4949; --body2:#525252; --hair:#D2D2D2; --line2:#CFCFCF;
+  --ease-out:cubic-bezier(.22,1,.36,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  /* the shared tokens the screens use, mapped to the brand */
+  --bg:#FCFCFD; --ink:#232323; --cream:#FFFFFF; --cream-2:#F4F5FD;
+  --gold:#3F4EE3; --gold-2:#261F8E; --pink:#3F4EE3; --magenta:#A52226; --orange:#261F8E; --teal:#00BD10;
+  --muted:#777777; --muted-2:#525252; --soft:#525252;
+  color:#232323;background:#F4F5FB;
+}
+body.m17 .app,body.m17 .app.gridbg{background-color:#FCFCFD;background-image:linear-gradient(#E3E5FA 0,#FBFBFE 168px,#FCFCFD 200px);background-size:auto;background-position:0 0}
+@media (min-width:520px){body.m17 .app{box-shadow:0 0 0 1px #E6E7F3,0 30px 80px rgba(38,31,142,.12)}}
+body.m17 .lights,body.m17 .bunting{display:none}
+body.m17 a{color:#3F4EE3}
+body.m17 button:focus-visible,body.m17 a:focus-visible,body.m17 input:focus-visible,body.m17 .bot:focus-visible{outline:2px solid #3F4EE3;outline-offset:3px}
+body.m17 input::placeholder{color:rgba(114,114,114,.5)}
+body.m17 .body{gap:16px}
+
+/* ---------- nav: the site's floating pill ---------- */
+body.m17 .topbar,body.m17 .topbar.gridbg{background:transparent;background-image:none;box-shadow:none}
+body.m17 .topbar::after{display:none}
+body.m17 .top{display:flex;justify-content:flex-start;gap:10px;margin:12px var(--gutter) 6px;padding:8px 16px 8px 8px;min-height:0;border:1px solid rgba(63,78,227,.18);border-radius:40px;background:rgba(255,255,255,.95);box-shadow:0 10px 30px rgba(38,31,142,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:header-drop .6s var(--ease-out)}
+body.m17 .top .back{width:34px;height:34px;border-radius:50%;border:0;background:rgba(63,78,227,.08);color:#000;box-shadow:none;transition:transform .35s var(--ease-spring),background-color .25s}
+body.m17 .top .back:hover{background:rgba(63,78,227,.16)}
+body.m17 .top .back:active{transform:scale(.92)}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:#000}
+.brand svg{width:30px;height:22px;transition:transform .6s var(--ease-spring,ease)}
+.brand:hover svg{transform:rotate(-8deg) scale(1.06)}
+.wordmark{display:flex;gap:4px;font-weight:600;font-size:18px;line-height:1.1;letter-spacing:-.03em;color:#000;white-space:nowrap}
+.wordmark span{color:#3F4EE3}
+@keyframes header-drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- type ---------- */
+body.m17 .ser{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:1.22em;line-height:1;letter-spacing:-.02em;color:#3F4EE3}
+.sec-head{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+body.m17 .h1{font-weight:600;font-size:clamp(26px,7.4vw,32px);line-height:1.1;letter-spacing:-.03em;color:#4C4949;text-align:center}
+body.m17 .sub{font-size:14px;line-height:1.4;letter-spacing:-.025em;color:#525252;text-align:center;max-width:300px}
+.mini-title{font-weight:600;font-size:20px;line-height:1.2;letter-spacing:-.025em;color:#1A1A1A;margin-top:4px}
+body.m17 .label{color:#8B8B8B}
+
+/* hero pill: "SELL + BUY | made for every ..." */
+.hero-pill{align-self:center;display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:6px 12px;border:1px solid #3F4EE3;border-radius:48px;background:#fff;filter:drop-shadow(2px 2px 0 #3F4EE3);font-size:12px;line-height:1;letter-spacing:-.025em;white-space:nowrap;overflow:hidden}
+.hp-brand{font-weight:500;color:#525252}
+.hp-brand .s{color:#261F8E}.hp-brand .b{color:#A52226}.hp-brand .plus{color:rgba(82,82,82,.38);margin:0 2px}
+.hp-div{flex:none;width:1px;height:14px;background:#D2D2D2}
+.hp-muted{color:rgba(82,82,82,.65)}
+.hp-accent{font-weight:500;color:#3F4EE3}
+
+/* ---------- buttons: black pill with a white arrow disc, outline pill ---------- */
+body.m17 .btn{min-height:52px;border:1px solid transparent;border-radius:30px;font-size:16px;font-weight:600;letter-spacing:-.03em;box-shadow:none;transition:transform .35s var(--ease-spring),box-shadow .35s var(--ease-out),background-color .25s,color .25s}
+body.m17 .btn.shine::after{display:none}
+body.m17 .btn-dark{background:#000;color:#fff;justify-content:center;padding:9px 19px}
+body.m17 .btn-dark.btn-arrow{justify-content:space-between;padding:7px 7px 7px 24px}
+body.m17 .btn-dark .ic{width:36px;height:36px;background:#fff;color:#000;transition:transform .45s var(--ease-spring)}
+body.m17 .btn-dark:hover{color:#fff;box-shadow:4px 4px 0 #3F4EE3;transform:translate(-2px,-2px)}
+body.m17 .btn-dark:hover .ic{transform:rotate(-45deg) scale(1.08)}
+body.m17 .btn:hover .ic svg{animation:none}
+body.m17 .pbtn:active,body.m17 .btn:active{transform:scale(.97);box-shadow:none!important}
+body.m17 .btn-ghost,body.m17 .btn-ghost.light{min-height:50px;border:1px solid #000;border-radius:30px;background:transparent;color:#000;font-weight:600;letter-spacing:-.03em;transition:background-color .25s,color .25s,transform .35s var(--ease-spring)}
+body.m17 .btn-ghost:hover{background:#000;color:#fff}
+body.m17 .btn-ig{background:linear-gradient(90deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;justify-content:space-between;padding:7px 7px 7px 24px}
+body.m17 .btn-ig:hover{color:#fff;box-shadow:4px 4px 0 #232323;transform:translate(-2px,-2px)}
+body.m17 .btn-ig .ic{background:#fff;color:#d6249f}
+body.m17 .textlink{color:#3F4EE3;font-weight:600}
+.outline-chip{display:inline-flex;align-items:center;gap:8px;height:36px;padding:6px 14px;border:1px solid #261F8E;border-radius:25px;background:#fff;font-weight:500;font-size:13px;color:#261F8E;font-family:inherit}
+.outline-chip svg{width:16px;height:16px}
+
+/* ---------- cards ---------- */
+body.m17 .card{background:#fff;color:#232323;border:1px solid #D2D2D2;border-radius:20px;box-shadow:4px 4px 0 #D2D2D2;padding:16px}
+body.m17 .card.gold{box-shadow:4px 4px 0 #D2D2D2}
+
+/* the homepage order cards (hcard): white, a brand border and a hard brand shadow */
+.hc{position:relative;display:flex;flex-direction:column;gap:12px;padding:16px;background:#fff;border:1px solid;border-radius:15px;transition:box-shadow .3s,transform .5s var(--ease-spring,ease)}
+.hc.sell{border-color:#261F8E;box-shadow:4px 4px 0 #261F8E}
+.hc.buy{border-color:#A52226;box-shadow:4px 4px 0 #A52226}
+.hc.sell:hover{box-shadow:7px 7px 0 #261F8E}
+.hc.buy:hover{box-shadow:7px 7px 0 #A52226}
+.hc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hc-id{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.hc-label{display:flex;align-items:center;gap:8px;font-weight:500;font-size:15px;line-height:1.1;letter-spacing:-.01em;white-space:nowrap}
+.hc.sell .hc-label{color:#261F8E}.hc.buy .hc-label{color:#A52226}
+.mini-logo{display:block;flex:none}
+.mini-logo svg{height:18px;width:auto}
+.hc-sub{font-size:13.5px;line-height:1.25;letter-spacing:-.01em;color:#5E5E5E}
+.hc-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+.hc-cap{font-size:11px;color:#8C8C8C;font-weight:500}
+.hc-amt{font-weight:500;font-size:20px;line-height:1.2;letter-spacing:-.01em;color:#000;white-space:nowrap;font-variant-numeric:tabular-nums}
+.paid{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:25px;background:rgba(0,189,16,.1);font-weight:600;font-size:11px;line-height:1.1;color:#00A50E}
+.paid svg{width:10px;height:10px}
+.hc-p{font-size:14px;line-height:1.5;color:#525252}
+.offer{font-weight:600;font-size:clamp(21px,6vw,24px);line-height:1.2;letter-spacing:-.03em;color:#232323}
+.gw-prod{display:flex;align-items:center;gap:12px;padding:10px;border-radius:14px;background:#F6F6F9}
+.gw-img{flex:none;width:76px;height:76px;border-radius:12px;background:#fff;display:grid;place-items:center;border:1px solid rgba(0,0,0,.06)}
+.gw-img img{width:84%;height:auto}
+.gw-name{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gw-name b{font-weight:600;font-size:15.5px;line-height:1.25;letter-spacing:-.02em;color:#232323}
+.gw-name small{font-size:12px;line-height:1.35;color:#898989}
+.hc .redirect{margin-top:2px}
+
+/* value cards (vcard) */
+.vlist{display:flex;flex-direction:column;gap:10px}
+.vcard{display:flex;align-items:center;gap:14px;padding:10px 14px 10px 10px;background:#fff;border:1px solid #D2D2D2;border-radius:16px;box-shadow:3px 3px 0 #D2D2D2;transition:box-shadow .4s var(--ease-out,ease),border-color .4s,transform .5s var(--ease-spring,ease)}
+.vcard:hover{border-color:#3F4EE3;box-shadow:6px 6px 0 #3F4EE3}
+.vc-ic{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(63,78,227,.08);display:grid;place-items:center;transition:transform .6s var(--ease-spring,ease)}
+.vc-ic svg{width:30px;height:30px}
+.vcard:hover .vc-ic{transform:rotate(-10deg) scale(1.08)}
+.vcard b{display:block;font-weight:500;font-size:15px;line-height:1.15;letter-spacing:-.03em;color:#4C4949}
+.vcard small{display:block;margin-top:3px;font-size:12.5px;line-height:1.4;letter-spacing:-.025em;color:#525252}
+
+/* the |17| badge the bots hold between them */
+.duo-mid{display:flex;align-items:center;padding-bottom:22%}
+.flow-badge{display:grid;place-items:center;width:58px;height:47px;border:1px solid #3F4EE3;border-radius:10px;background:#fff;box-shadow:2px 2px 0 #3F4EE3;color:#000;animation:badge-in .6s .3s var(--ease-spring,ease) both}
+.flow-badge svg{width:34px;height:auto}
+@keyframes badge-in{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.scene-wrap{padding-top:34px}
+
+/* countdown as the site's sync pill */
+body.m17 .redirect{align-self:center;display:inline-flex;align-items:center;gap:10px;width:auto;padding:5px 16px 5px 5px;border:1px solid #CFCFCF;border-radius:999px;background:#fff;filter:drop-shadow(3px 4px 0 #CFCFCF);text-align:left}
+body.m17 .redirect .ring,body.m17 .redirect .ring svg{width:32px;height:32px}
+body.m17 .ring circle{stroke-width:4}
+body.m17 .ring .trk{stroke:rgba(63,78,227,.14)}
+body.m17 .ring .bar{stroke:#3F4EE3}
+body.m17 .ring b{font-family:inherit;font-weight:700;font-size:12px;color:#000}
+body.m17 .redirect p{font-weight:600;font-size:12.5px;line-height:1.3;letter-spacing:-.03em;color:#55556A}
+body.m17 .redirect p b{color:#3F4EE3}
+
+/* ---------- the SELL / BUY bots (from bots.css on the site) ---------- */
+.stage.duo .row{gap:12px;align-items:flex-end}
+.bot{position:relative;display:inline-block;flex:none;width:var(--cs,92px);padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bot-art{display:block;width:100%;height:auto;overflow:visible}
+.bot-buy .bot-art{transform:scaleX(-1)}
+.bot-art g{transform-box:fill-box}
+.bot-art .bag-badge{transform-box:view-box}
+.bot-upper{animation:bot-breathe 1.6s steps(1,jump-end) infinite}
+.bot-buy .bot-upper{animation-delay:-.8s}
+.bot-eyes{transform-origin:center}
+.bot.is-blinking .bot-eyes{transform:scaleY(.3)}
+.bot-jump{transform-origin:50% 100%}
+.bot-shadow{transform-origin:center}
+.bot-hat{transform-origin:50% 100%}
+.bot-bag{transform-origin:50% 0}
+.bot-leg-sit{display:none}
+.bot.is-hopping .bot-jump{animation:bot-hop .6s steps(6) both}
+.bot.is-hopping .bot-shadow{animation:bot-shadow .6s steps(6) both}
+.bot.is-hopping .bot-hat{animation:bot-hat .5s steps(4) both}
+.bot.is-hopping .bot-bag{animation:bot-bag .6s steps(4) both}
+/* moods */
+.stage.duo.cheer .bot-jump,.stage.duo.dance .bot-jump{animation:bot-hop 1.4s steps(8) infinite}
+.stage.duo.cheer .bot-shadow,.stage.duo.dance .bot-shadow{animation:bot-shadow 1.4s steps(8) infinite}
+.stage.duo.cheer .bot-buy .bot-jump,.stage.duo.dance .bot-buy .bot-jump,.stage.duo.cheer .bot-buy .bot-shadow,.stage.duo.dance .bot-buy .bot-shadow{animation-delay:-.7s}
+.stage.duo.wave .bot-hat{animation:bot-hat 1s steps(4) infinite}
+.stage.duo.sad .bot-upper{animation:bot-nod 2.4s steps(1) infinite}
+.stage.duo.sad .bot-hat{translate:0 1px}
+.stage.duo.sad .bot-art{filter:saturate(.7)}
+@keyframes bot-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
+@keyframes bot-hop{0%{translate:0 0;scale:1 1}15%{translate:0 0;scale:1.08 .88}45%{translate:0 -4px;scale:.95 1.06}75%{translate:0 0;scale:1.06 .92}100%{translate:0 0;scale:1 1}}
+@keyframes bot-shadow{0%,100%{scale:1 1}45%{scale:.7 1}}
+@keyframes bot-hat{0%,100%{translate:0 0}25%{translate:-1px -1px}50%{translate:0 -2px}75%{translate:1px -1px}}
+@keyframes bot-bag{0%,100%{translate:0 0}30%{translate:-1px 1px}70%{translate:1px 0}}
+@keyframes bot-nod{0%,100%{transform:translateY(0)}50%{transform:translateY(1px)}}
+/* speech bubble */
+.bot-bubble{position:absolute;bottom:calc(100% + 4px);z-index:3;padding:6px 10px;border:2px solid;border-radius:4px;background:#fff;font-weight:600;font-size:12.5px;line-height:1.2;letter-spacing:-.02em;color:#232323;white-space:nowrap;pointer-events:none;opacity:0;transform:translateY(6px) scale(.6);transition:opacity .12s steps(2),transform .2s steps(3)}
+.bot-bubble::after{content:"";position:absolute;top:100%;width:8px;height:8px;border:2px solid;border-top:0;border-left:0;border-color:inherit;background:#fff;transform:translateY(-4px) rotate(45deg)}
+.bot-sell .bot-bubble{left:0;border-color:#261F8E;box-shadow:3px 3px 0 #261F8E;transform-origin:30% 100%}
+.bot-sell .bot-bubble::after{left:30%}
+.bot-buy .bot-bubble{right:0;border-color:#A52226;box-shadow:3px 3px 0 #A52226;transform-origin:70% 100%}
+.bot-buy .bot-bubble::after{right:30%}
+.bot.has-bubble .bot-bubble{opacity:1;transform:none}
+.bot-bubble:empty{display:none}
+.bot-fx{position:absolute;left:var(--fx-x,50%);top:15%;width:14px;pointer-events:none;animation:bot-fx .9s steps(6) forwards}
+.bot-fx svg{display:block;width:100%;height:auto}
+@keyframes bot-fx{0%{opacity:0;translate:0 0}20%{opacity:1}100%{opacity:0;translate:0 -26px}}
+/* sizes per place (multiples of the 23-pixel art keep it crisp) */
+body.m17 .react .stage{--cs:46px}
+body.m17 .react .stage.duo .row{gap:4px}
+body.m17 .react .bot-bubble{display:none}
+body.m17 .sc-mascots .stage{--cs:46px}
+body.m17 .sc-mascots .bot-bubble{display:none}
+body.m17 .sheet-body .stage{--cs:69px}
+
+/* ---------- video ---------- */
+body.m17 .vid{border:1px solid #D2D2D2;border-radius:16px;box-shadow:4px 4px 0 #D2D2D2;background:#000}
+body.m17 .vid.has-script{background:#fff}
+body.m17 .vid .ph,body.m17 .vid .ph.script{background-color:#fff;background-image:none}
+body.m17 .vid .lbl{background:#F5E8E9;color:#A52226;font-weight:700}
+body.m17 .sc-tag{color:#3F4EE3}
+body.m17 .sc-text{color:#232323}
+body.m17 .sc-play{background:#000;color:#fff;border:0}
+body.m17 .sc-bar i{background:linear-gradient(#3F4EE3,#3F4EE3) no-repeat left/0 100% #ECECF3}
+body.m17 .sc-bar.done i{background-size:100% 100%}
+body.m17 .mock{border:2px solid #261F8E;border-radius:4px;background:#fff;color:#232323;box-shadow:3px 3px 0 #261F8E}
+body.m17 .mock.buy{border-color:#A52226;box-shadow:3px 3px 0 #A52226}
+body.m17 .play{background:#fff;color:#000;border:0;box-shadow:none}
+
+/* quest = the homepage stepper */
+.quest{display:flex;flex-direction:column;gap:14px}
+.q-head{display:flex;align-items:center;justify-content:space-between}
+.q-head b{font-weight:600;font-size:15px;letter-spacing:-.025em;color:#1A1A1A}
+.q-count{font-size:12px;font-weight:600;color:#3F4EE3;background:rgba(63,78,227,.08);padding:4px 10px;border-radius:999px}
+.steps4{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr)}
+.steps4 .step{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:500;font-size:12.5px;line-height:1.1;letter-spacing:-.3px;color:#525252}
+.steps4 .step+.step::before{content:"";position:absolute;top:14px;right:calc(50% + 20px);width:calc(100% - 40px);border-top:1.5px dashed #C4C4C4}
+.steps4 .step.is-done+.step::before{border-top-style:solid;border-color:#3F4EE3}
+.step-n{position:relative;z-index:1;display:grid;place-items:center;width:28px;height:28px;border-radius:28px;background:rgba(82,82,82,.1);font-weight:600;font-size:13px;color:#525252;transition:background .5s,color .5s,transform .5s var(--ease-spring,ease)}
+.step-n svg{width:12px;height:12px}
+.step.is-done .step-n,.step.is-active .step-n{background:#3F4EE3;color:#fff}
+.step.is-active .step-n{transform:scale(1.12);box-shadow:0 0 0 6px rgba(63,78,227,.15)}
+.step.is-active{color:#232323}
+.step.just .step-n{animation:step-pop .6s var(--ease-spring,ease)}
+@keyframes step-pop{0%{transform:scale(.6)}100%{transform:none}}
+.q-hint{font-size:12.5px;line-height:1.4;color:#777;text-align:center}
+
+/* community shield */
+body.m17 .shield{gap:14px}
+body.m17 .shield-ico{border-radius:50%;background:rgba(63,78,227,.08);color:#261F8E}
+body.m17 .shield-head .t b{font-weight:600;letter-spacing:-.03em;color:#4C4949}
+body.m17 .lvl{border:0;font-weight:600;font-size:11px}
+body.m17 .lvl.l0{background:rgba(0,189,16,.1);color:#00A50E}
+body.m17 .lvl.l1{background:rgba(63,78,227,.1);color:#261F8E}
+body.m17 .lvl.l2{background:#FDF0DC;color:#9A5A00}
+body.m17 .lvl.l3{background:#F5E8E9;color:#A52226}
+body.m17 .vbtn{min-height:46px;border:1px solid #000;border-radius:30px;background:#fff;color:#000;box-shadow:none;font-weight:600;transition:background-color .25s,color .25s,transform .35s var(--ease-spring)}
+body.m17 .vbtn.up[aria-pressed="true"]{background:#261F8E;border-color:#261F8E;color:#fff}
+body.m17 .vbtn.down[aria-pressed="true"]{background:#A52226;border-color:#A52226;color:#fff}
+body.m17 .vbtn.pop svg{animation:step-pop .5s var(--ease-spring)}
+body.m17 .meter-track{height:10px;border:0;border-radius:99px;background:#ECECF3}
+body.m17 .meter-fill{background:#A52226;animation:none;border-radius:99px}
+body.m17 .meter-track i{background:#fff;width:2px}
+body.m17 .meter-goal{width:30px;height:30px;border-radius:50%;background:#F5E8E9}
+body.m17 .meter-goal svg{width:16px;height:16px}
+body.m17 .meter.bump .meter-track{animation:none}
+body.m17 .meter-labels{color:#777}
+body.m17 .meter-labels b{color:#000}
+body.m17 .react{background:#F6F6F9;border:0;border-radius:14px}
+body.m17 .react p{font-weight:500;color:#525252}
+body.m17 .vote-note{color:#8B8B8B}
+/* the flying +1 / -1: the homepage's flow chip */
+body.m17 .flychip{border:2px solid #fff;border-radius:999px;font-family:inherit;font-weight:700;font-size:13px;padding:6px 12px;color:#fff}
+body.m17 .flychip.plus{background:#A52226;box-shadow:0 0 0 3px rgba(165,34,38,.22),0 6px 16px rgba(165,34,38,.45)}
+body.m17 .flychip.minus{background:#3F4EE3;box-shadow:0 0 0 3px rgba(63,78,227,.22),0 6px 16px rgba(63,78,227,.45)}
+
+/* ---------- giveaway ---------- */
+body.m17 .gift-stage{min-height:0;gap:14px;padding-top:34px}
+body.m17 .gift-stage .stage.duo .row{align-items:flex-end;gap:6px}
+body.m17 .giftbtn{width:96px;height:96px;margin-bottom:4px;background:none;border:0;padding:0;cursor:pointer}
+body.m17 .giftbtn svg{width:96px;height:96px;overflow:visible}
+body.m17 .giftbtn .glow{display:none}
+body.m17 .giftbtn .whole{animation:gift-breathe 1.6s steps(1,jump-end) infinite}
+body.m17 .giftbtn:hover .lid{translate:0 -1px}
+body.m17 .giftbtn.open .whole{animation:none}
+body.m17 .giftbtn.open .lid{animation:gift-lid .7s steps(7) forwards}
+@keyframes gift-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
+@keyframes gift-lid{0%{translate:0 0;opacity:1}40%{translate:0 -4px}100%{translate:0 -9px;opacity:0}}
+.trust{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;font-size:12px;font-weight:500;color:#525252}
+.trust span{display:inline-flex;align-items:center;gap:5px}
+.trust svg{width:11px;height:11px;color:#00A50E}
+
+/* the prize as a BUY store product card */
+.prize-card{display:flex;flex-direction:column;gap:12px;padding:10px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:20px;box-shadow:4px 4px 0 #D2D2D2;animation:prize-in .7s var(--ease-spring) both}
+.p-img{position:relative;display:grid;place-items:center;aspect-ratio:4/3;border-radius:14px;background:#F6F6F9;overflow:hidden}
+.p-img img{position:absolute;left:10%;top:8%;width:80%;height:84%;max-width:none;object-fit:contain;filter:drop-shadow(0 10px 12px rgba(0,0,0,.15))}
+.p-meta{display:flex;flex-direction:column;gap:6px;padding:0 6px 6px}
+.p-kick{font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A52226}
+.p-name{font-weight:600;font-size:19px;line-height:1.2;letter-spacing:-.03em;color:#232323}
+.p-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.p-worth{font-size:13px;color:#696969}
+.p-worth b{font-weight:600;font-size:17px;color:#000}
+.off-chip{display:inline-flex;padding:5px 10px;border-radius:33px;background:rgba(1,174,15,.1);color:#01AE0F;font-size:11.5px;font-weight:600;line-height:1.1;white-space:nowrap}
+@keyframes prize-in{from{transform:translateY(26px) scale(.94);opacity:0}to{transform:none;opacity:1}}
+
+/* the FAQ list (01 ... with dashed separators) */
+.qa-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.qa-list li{display:flex;align-items:flex-start;gap:14px;padding:14px 0;background:repeating-linear-gradient(90deg,#C0C0C0 0 11px,transparent 11px 22px) 0 100%/100% 1px no-repeat}
+.qa-list li:last-child{background:none}
+.qa-n{flex:none;min-width:24px;font-weight:500;font-size:16px;color:#616161}
+.qa-list b{display:block;font-weight:500;font-size:15.5px;line-height:1.2;letter-spacing:-.025em;color:#232323}
+.qa-list small{display:block;margin-top:4px;font-size:13px;line-height:1.4;letter-spacing:-.02em;color:#706E69}
+
+/* the form = the site's suggestion form card */
+.idea{display:flex;flex-direction:column;gap:14px;padding:16px;background:#fff;border:1px solid #000;border-radius:24px;box-shadow:5px 5px 0 #000}
+.idea-head h3{font-weight:600;font-size:20px;line-height:1.2;letter-spacing:-.025em;color:#1A1A1A}
+.idea-head p{margin-top:4px;font-size:13px;line-height:1.5;color:#525252}
+body.m17 .field label{font-weight:500;font-size:13px;color:#525252}
+body.m17 .field input,body.m17 .phone-row .cc{height:52px;padding:0 16px;border:1px solid #CBCBCB;border-radius:20px;background:#fff;font-size:16px;letter-spacing:-.025em;color:#333;transition:border-color .3s,box-shadow .3s}
+body.m17 .phone-row .cc{padding:0 14px;background:#F6F6F9;color:#333;font-weight:600}
+body.m17 .field input:focus{border-color:#3F4EE3;box-shadow:0 0 0 4px rgba(63,78,227,.12);outline:none}
+body.m17 .field input.err{border-color:#E5484D}
+body.m17 .field .hint,body.m17 .ig-line{color:#8B8B8B}
+body.m17 .idea-btn{width:100%}
+body.m17 .entry-no{font-family:inherit;font-weight:600;font-size:inherit;letter-spacing:0;color:#000}
+
+/* ---------- modal (Instagram step) ---------- */
+body.m17 .overlay{background:rgba(20,16,63,.45)}
+body.m17 .sheet{background:#fff;border:1px solid #000;border-bottom:0;border-radius:24px 24px 0 0;box-shadow:none}
+@media (min-width:520px){body.m17 .sheet{border-bottom:1px solid #000;border-radius:24px;box-shadow:5px 5px 0 #000}}
+body.m17 .sheet .grab{background:#E1E3F6}
+body.m17 .sheet .x{border:0;background:rgba(63,78,227,.08)}
+body.m17 .sheet h2{font-weight:600;letter-spacing:-.03em;color:#1A1A1A}
+body.m17 .sheet p{color:#525252}
+body.m17 .ig-card{border:1px solid #D2D2D2;border-radius:16px;box-shadow:3px 3px 0 #D2D2D2}
+body.m17 .ig-av span{background:#fff;color:#000;border-color:#fff}
+body.m17 .waiting{background:#F6F6F9;border:1px dashed #C4C4C4;border-radius:999px;font-weight:600}
+body.m17 .spin-s{border-color:#DCDFFA;border-top-color:#3F4EE3}
+body.m17 .bubble{border:2px solid #A52226;border-radius:4px;box-shadow:3px 3px 0 #A52226}
+body.m17 .bubble::after{border-right:2px solid #A52226;border-bottom:2px solid #A52226}
+body.m17 .toast{background:#000;color:#fff;border:0;box-shadow:4px 4px 0 #3F4EE3}
+
+/* ---------- done: the final CTA from the homepage ---------- */
+.cta-final{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 4px 8px;text-align:center}
+.cta-orn{color:#C9CDF2}
+.cta-orn svg{width:40px;height:auto}
+.cta-title{display:flex;flex-direction:column;font-weight:600;font-size:clamp(23px,6.6vw,27px);line-height:1.2;letter-spacing:-.03em;color:#000}
+.cta-title .ser{font-size:1.15em;line-height:1.1}
+.cta-sub{margin-top:-4px;font-size:12px;line-height:1.6;color:#A8A7AF}
+.cta-final .btn,.cta-final .btn-ghost{width:100%}
+
+/* ---------- footer: the site's footer brand ---------- */
+body.m17 .foot{padding-top:10px;color:#8B8B8B;font-size:12px}
+body.m17 .foot .foot-logo{color:#000}
+.foot-brand{display:flex;flex-direction:column;gap:2px}
+.foot-brand b{font-weight:600;font-size:15px;letter-spacing:-.03em;color:#000}
+body.m17 .sheet-body .stage.duo{margin-top:10px}
+@media (max-width:360px){.hero-pill{font-size:10.5px;gap:6px;padding:5px 10px}}
