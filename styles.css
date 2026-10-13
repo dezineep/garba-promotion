@@ -885,3 +885,47 @@ body.m17 .sheet-body .stage.duo{margin-top:10px}
 body.m17 .idea.entry .field{gap:5px}
 body.m17 .idea.entry .field input,body.m17 .idea.entry .phone-row .cc{height:48px}
 .btn[disabled]{opacity:.6;cursor:progress}
+
+/* ---------- match screen: the card is the button, the CTA sits right under it ---------- */
+.frame.frame-btn{width:min(230px,62vw);font:inherit;color:inherit;cursor:pointer;padding:0 0 30px;transition:transform .35s var(--ease-spring,ease)}
+.frame.frame-btn:active{transform:rotate(-2deg) scale(.97)}
+.tap-reveal{position:absolute;left:50%;bottom:10px;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:#261F8E;color:#fff;border:1.5px solid var(--ink);font-size:12px;font-weight:700;white-space:nowrap;transform:translateX(-50%);animation:tap-pulse 1.4s ease-in-out infinite}
+.tap-reveal svg{width:12px;height:12px}
+@keyframes tap-pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.07)}}
+.reveal-cta{width:100%}
+
+/* ---------- video screen: the mystery box ---------- */
+.gw-box{position:relative;background:#F1F2FC;border:0;overflow:visible}
+.gw-box svg{width:54px;height:54px;overflow:visible;animation:box-wobble 2.4s steps(1) infinite}
+.gw-box .q{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#A52226;border:2px solid #fff;color:#fff;font-weight:700;font-size:13px;animation:q-bounce 1.2s steps(4) infinite}
+@keyframes box-wobble{0%,70%,100%{rotate:0deg}75%{rotate:-6deg}80%{rotate:6deg}85%{rotate:-4deg}90%{rotate:3deg}}
+@keyframes q-bounce{0%,100%{translate:0 0}50%{translate:0 -3px}}
+
+/* ---------- box screen: laughing, jumping bots ---------- */
+.stage.duo.party .bot-jump{animation:bot-hop .9s steps(6) infinite}
+.stage.duo.party .bot-shadow{animation:bot-shadow .9s steps(6) infinite}
+.stage.duo.party .bot-buy .bot-jump,.stage.duo.party .bot-buy .bot-shadow{animation-delay:-.45s}
+.stage.duo.party .bot-hat{animation:bot-hat .45s steps(4) infinite}
+.stage.duo.party .bot-art{animation:bot-giggle .5s steps(2) infinite}
+.stage.duo.party .bot-eyes{animation:bot-laugh 1.2s steps(1) infinite}
+@keyframes bot-giggle{0%,100%{rotate:-3deg}50%{rotate:3deg}}
+@keyframes bot-laugh{0%,45%{transform:scaleY(1)}50%,95%{transform:scaleY(.35)}}
+/* the box: shakes, bursts, the lid flies */
+body.m17 .giftbtn{position:relative}
+body.m17 .giftbtn.open .whole{animation:gift-shake .42s steps(6)}
+body.m17 .giftbtn.open .lid{animation:gift-lid .6s .38s steps(6) forwards}
+body.m17 .giftbtn.opened .whole,body.m17 .giftbtn.opened .lid{animation:none}
+body.m17 .giftbtn.opened .lid{opacity:0}
+@keyframes gift-shake{0%,100%{rotate:0deg}20%{rotate:-8deg}40%{rotate:8deg}60%{rotate:-6deg}80%{rotate:5deg}}
+@keyframes gift-lid{0%{translate:0 0;opacity:1}50%{translate:0 -6px}100%{translate:0 -12px;opacity:0}}
+body.m17 .burst .flash{display:none}
+/* the prize floats out of the box */
+.reveal-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px;background:#fff;border:1px solid #A52226;border-radius:20px;box-shadow:5px 5px 0 #A52226;text-align:center}
+.rc-kick{font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#A52226}
+.rc-img{position:relative;display:grid;place-items:center;width:min(190px,52vw);aspect-ratio:1;border-radius:18px;background:radial-gradient(circle,#EEF0FF 0,#F6F6F9 55%,#fff 75%)}
+.rc-img img{width:78%;height:auto;filter:drop-shadow(0 12px 14px rgba(0,0,0,.18));animation:float 3s ease-in-out infinite}
+.reveal-card .p-name{font-size:19px}
+.reveal-card .p-row{width:100%}
+.reveal-card .btn{width:100%}
+.floating-in{animation:float-in .9s var(--ease-spring,cubic-bezier(.34,1.56,.64,1)) both}
+@keyframes float-in{0%{opacity:0;transform:translateY(90px) scale(.4)}60%{opacity:1}100%{opacity:1;transform:none}}

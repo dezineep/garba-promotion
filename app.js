@@ -70,7 +70,13 @@
     prize: { name: 'Noise Airwave Max 4 Headphones', worth: '₹1,700', image: 'assets/noise-airwave-max-4-cut.webp' },
     campaign: 'Garba',
     // Local preview talks to a local backend; the live site talks to production.
-    apiBase: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:5500/api/' : 'https://api.modulusseventeen.com/api/'
+    // Local preview talks to a local backend; modulusseventeen.com talks to the API directly. Any other host
+    // (garba-promotion.vercel.app) goes through the /api proxy in vercel.json, because the API's CORS only allows modulusseventeen.com.
+    apiBase: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:5500/api/'
+      : /(^|\.)modulusseventeen\.com$/.test(location.hostname) ? 'https://api.modulusseventeen.com/api/' : '/api/',
+    // Also save "Name · @handle" as the entry name, so the handle is visible in the entries list even if the
+    // backend does not store the separate instagramHandle field yet. Set to false once it does.
+    handleInName: true
   };
 
   /* ---------------- backend ---------------- */
@@ -183,7 +189,7 @@
     '<rect x="19" y="13" width="3" height="2" fill="#FFF1DC"/></svg>';
 
   /* ---------- Modulus Seventeen theme: indigo (SELL) and brick red (BUY) pixel mascots ---------- */
-  var M17_SCREENS = { business: 1, video: 1, giveaway: 1, done: 1 };   // everything from the reveal on wears the brand
+  var M17_SCREENS = { business: 1, video: 1, giveaway: 1, enter: 1, done: 1 };   // everything from the reveal on wears the brand
   function isM17(s) { return !!M17_SCREENS[s || S.screen]; }
   function tint(svg, map) { return svg.replace(/#[0-9A-Fa-f]{6}/g, function (c) { return map[c.toUpperCase()] || c; }); }
   var M17_BOY = { '#FF7A1A': '#261F8E', '#D9530A': '#19136B', '#FF3D8B': '#A52226', '#FFB81C': '#7C86F0', '#FFF1DC': '#F5EADB', '#EBD3B0': '#E2CFB0', '#FF8FB1': '#F2A7A9', '#2B0711': '#14103F' };
@@ -315,7 +321,7 @@
   };
   if (S.vote !== 'up' && S.vote !== 'down') S.vote = null;
   var timers = [];
-  var BACK = { under18: 'age', gender: 'age', profession: 'gender', business: 'profession', radar: 'profession', found: 'profession', video: 'found', giveaway: 'video', done: 'giveaway' };
+  var BACK = { under18: 'age', gender: 'age', profession: 'gender', business: 'profession', radar: 'profession', found: 'profession', video: 'found', giveaway: 'video', enter: 'giveaway', done: 'giveaway' };
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
@@ -560,19 +566,17 @@
   screens.found = function () {
     var p = partner();
     return '<span class="match-title anton">It\'s a match!</span>' +
-      '<div style="display:flex;justify-content:center;perspective:800px"><div class="frame">' +
+      '<div style="display:flex;justify-content:center;perspective:800px"><button type="button" class="frame frame-btn" data-act="go" data-to="video" aria-label="Reveal my partner">' +
         '<span class="dist">' + p.match + '% vibe match</span><span class="ok">' + I.check + '</span>' +
         (p.photo ? '<img src="' + esc(p.photo) + '" alt="Your Garba partner">' : stage('dance', { boy: !p.female, girl: p.female, gap: 0 })) +
-      '</div></div>' +
-      '<section class="scr d2" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding-top:6px">' +
+        '<span class="tap-reveal">' + I.play + 'Tap to reveal</span>' +
+      '</button></div>' +
+      '<button class="btn btn-m17 pbtn shine reveal-cta scr d1" data-act="go" data-to="video"><span class="m17mark">' + LOGO + '</span><span class="bt"><small>From Modulus Seventeen</small>Reveal my partner</span><span class="ic">' + I.play + '</span></button>' +
+      '<p class="assure scr d1">' + I.shield + 'Free. Nothing to pay, no sign-up.</p>' +
+      '<section class="scr d2" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">' +
         '<span class="masked">' + p.masked + '</span>' +
         '<span class="jobpill">' + p.job + '</span>' +
         '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px">' + p.traits.map(function (t, i) { return '<span class="trait" style="animation-delay:' + (.5 + i * .12) + 's">' + t + '</span>'; }).join('') + '</div>' +
-        '<div class="card found-card" style="width:100%;margin-top:4px;padding:18px;display:flex;flex-direction:column;gap:12px">' +
-          '<p style="font-size:16px;line-height:1.45;font-weight:600"><span class="ser" style="color:var(--magenta)">Your reveal is ready.</span> It\'s free: nothing to pay, no sign-up.</p>' +
-          '<button class="btn btn-m17 pbtn shine" data-act="go" data-to="video"><span class="m17mark">' + LOGO + '</span><span class="bt"><small>From Modulus Seventeen</small>Reveal my partner</span><span class="ic">' + I.play + '</span></button>' +
-          '<p class="assure dark">' + I.shield + 'A free ' + CONFIG.event + ' game. No payment needed.</p>' +
-        '</div>' +
       '</section>';
   };
   screens.found.after = function () { confetti(true); };
@@ -681,13 +685,13 @@
     if (q) q.outerHTML = questHTML(pop || null);
   }
 
-  // the giveaway right under the video, as one of the homepage's order cards
+  // the giveaway right under the video: a mystery box (the prize is revealed when they open it)
   function giveawayTease() {
     return '<section class="hc buy gw scr d2">' +
       '<div class="hc-top"><div class="hc-id"><span class="hc-label">' + miniLogo() + CONFIG.event + ' giveaway</span><span class="paid">Free to enter</span></div>' +
       '<div class="hc-right"><small class="hc-cap">Worth</small><span class="hc-amt">' + CONFIG.prize.worth + '</span></div></div>' +
-      '<div class="gw-prod"><span class="gw-img"><img src="' + CONFIG.prize.image + '" alt="" width="581" height="720"></span><span class="gw-name"><small>You could win</small><b>' + esc(CONFIG.prize.name) + '</b><small>Takes 30 seconds. Winner announced on Instagram.</small></span></div>' +
-      arrowBtn(S.entered ? 'See my entry' : 'Enter the giveaway', 'data-act="go" data-to="giveaway"') +
+      '<div class="gw-prod"><span class="gw-img gw-box">' + GIFT_SVG + '<span class="q">?</span></span><span class="gw-name"><small>Mystery gift</small><b>What\'s inside the box?</b><small>Open it to find out. Winner announced on Instagram.</small></span></div>' +
+      arrowBtn(S.entered ? 'See my entry' : 'Participate Now', 'data-act="go" data-to="giveaway"') +
     '</section>';
   }
 
@@ -860,24 +864,57 @@
           arrowBtn('See my entry', 'data-act="go" data-to="done"') +
         '</section>';
     }
-    if (!S.giftOpened) {
-      return pill + head('A Gift Is <span class="ser">Waiting</span>', 'Tap the box to see what we\'re giving away this ' + CONFIG.event + '.') +
-        '<div class="gift-stage scr d1" id="giftstage">' +
-          duo('idle', { sell: 'Open it!', buy: 'Tap the box!', mid17: '<button class="giftbtn" id="giftbtn" data-act="opengift" aria-label="Open the gift box">' + GIFT_SVG + '</button>' }) +
-          '<button class="outline-chip pbtn" data-act="opengift">' + I.gift + ' Tap to open</button>' +
-        '</div>' +
-        '<div class="trust scr d2"><span>' + I.check + 'Free to enter</span><span>' + I.check + 'No purchase needed</span><span>' + I.check + 'Winner on Instagram</span></div>';
-    }
-    return pill + head('Enter the <span class="ser">Giveaway</span>') +
+    var opened = S.giftOpened;
+    return pill + '<div id="gwhead">' + giftHead(opened) + '</div>' +
+      '<div class="gift-stage scr d1" id="giftstage">' +
+        duo('party', { sell: opened ? 'Woohoo!' : 'Hehe! Open it!', buy: opened ? 'Grab it!' : 'Tap the box!', mid17: opened
+          ? '<span class="giftbtn open opened" aria-hidden="true">' + GIFT_SVG + '</span>'
+          : '<button class="giftbtn" id="giftbtn" data-act="opengift" aria-label="Open the gift box">' + GIFT_SVG + '</button>' }) +
+        (opened ? '' : '<button class="outline-chip pbtn" id="taphint" data-act="opengift">' + I.gift + ' Tap the box</button>') +
+      '</div>' +
+      (opened ? revealCard(false) : '') +
+      '<div class="trust scr d2"><span>' + I.check + 'Free to enter</span><span>' + I.check + 'No purchase needed</span><span>' + I.check + 'Winner on Instagram</span></div>';
+  };
+  function giftHead(opened) {
+    return opened ? head('It\'s Yours to <span class="ser">Win!</span>', 'Free to enter. Winner announced on Instagram.')
+      : head('A Gift Is <span class="ser">Waiting</span>', 'Tap the box to open your ' + CONFIG.event + ' surprise.');
+  }
+  // the prize floating out of the box
+  function revealCard(animate) {
+    return '<section class="reveal-card' + (animate ? ' floating-in' : ' scr d2') + '" id="revealcard">' +
+      '<span class="rc-kick">Inside the box</span>' +
+      '<div class="rc-img"><img src="' + CONFIG.prize.image + '" alt="' + esc(CONFIG.prize.name) + '" width="581" height="720"></div>' +
+      '<b class="p-name">' + esc(CONFIG.prize.name) + '</b>' +
+      '<span class="p-row"><span class="p-worth">Worth <b>' + CONFIG.prize.worth + '</b></span><span class="off-chip">Free to enter</span></span>' +
+      arrowBtn('Grab it Now', 'data-act="go" data-to="enter"') +
+    '</section>';
+  }
+  // the two bots can't stop laughing while the box waits
+  var LAUGH = {
+    sell: ['Hahaha!', 'Hehe!', 'Open it!', 'Tap tap tap!', 'Hehehe!'],
+    buy: ['Bahaha!', 'Hehe!', 'What\'s inside?', 'Go on!', 'Hahaha!']
+  };
+  screens.giveaway.after = function () {
+    if (S.entered) return;
+    var k = 0;
+    every(function () {
+      var kind = k++ % 2 ? 'buy' : 'sell', lines = S.giftOpened ? ['Woohoo!', 'Grab it!', 'Yay!', 'So good!'] : LAUGH[kind];
+      botSay(kind, lines[Math.floor(Math.random() * lines.length)]);
+    }, 1700);
+  };
+
+  // the form, on its own screen after "Grab it Now": name and Instagram handle (both needed), plus the follow step
+  screens.enter = function () {
+    if (S.entered) return screens.giveaway();
+    return heroPill('Official giveaway', 'by Modulus Seventeen') + head('Enter the <span class="ser">Giveaway</span>') +
       prizeStrip() +
       '<section class="idea entry scr d2">' +
         '<div class="es"><span class="es-n">1</span><span class="es-t"><b>Follow ' + CONFIG.instagramHandle + '</b><small>We check every entry by hand before the draw.</small></span></div>' +
         followBox() +
         '<div class="es-sep"></div>' +
-        '<div class="es"><span class="es-n">2</span><span class="es-t"><b>Your details</b><small>Only used to reach the winner. One entry per number.</small></span></div>' +
+        '<div class="es"><span class="es-n">2</span><span class="es-t"><b>Your details</b><small>We\'ll message the winner on Instagram. One entry per person.</small></span></div>' +
         '<div class="field"><label for="gw-name">Your name</label><input id="gw-name" type="text" autocomplete="name" maxlength="40" placeholder="e.g. Riya Shah" value="' + esc(S.name) + '"></div>' +
-        '<div class="field"><label for="gw-phone">Mobile number</label><div class="phone-row"><span class="cc">+91</span><input id="gw-phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit mobile number" value="' + esc(S.phone) + '"></div></div>' +
-        '<div class="field"><label for="gw-ig">Instagram handle <span class="opt">(optional)</span></label><div class="phone-row"><span class="cc">@</span><input id="gw-ig" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" maxlength="31" placeholder="yourhandle" value="' + esc(S.ig) + '"></div></div>' +
+        '<div class="field"><label for="gw-ig">Instagram handle</label><div class="phone-row"><span class="cc">@</span><input id="gw-ig" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" maxlength="31" placeholder="yourhandle" value="' + esc(S.ig) + '"></div></div>' +
         '<button class="btn btn-dark pbtn idea-btn" id="participate" data-act="participate"><span>Participate Now</span></button>' +
       '</section>';
   };
@@ -908,8 +945,16 @@
     var btn = $('#giftbtn'); if (!btn || btn.classList.contains('open')) return;
     btn.classList.add('open');
     if (isM17()) {
-      botSay('sell', 'Woohoo!'); botSay('buy', 'Look at that!');
-      later(function () { S.giftOpened = true; clearTimers(); render(); }, reduced ? 50 : 950);
+      botSay('sell', 'Woohoo!'); botSay('buy', 'Hahaha, look!');
+      var hint = $('#taphint'); if (hint) hint.remove();
+      later(function () { burstOn(btn, 30, 110, true); }, reduced ? 0 : 420);
+      later(function () {
+        S.giftOpened = true;
+        var h = $('#gwhead'); if (h) h.innerHTML = giftHead(true);
+        $('#giftstage').insertAdjacentHTML('afterend', revealCard(true));
+        var rc = $('#revealcard');
+        if (rc && rc.getBoundingClientRect().bottom > window.innerHeight) window.scrollTo({ top: rc.getBoundingClientRect().top + window.scrollY - 140, behavior: reduced ? 'auto' : 'smooth' });
+      }, reduced ? 0 : 750);
       return;
     }
     var stageEl = $('#giftstage');
@@ -923,8 +968,8 @@
   }
 
   // a firework of colour from the middle of host (it needs position: relative); n pieces flying up to reach px
-  function burstOn(host, n, reach) {
-    if (!host || reduced || isM17()) return;
+  function burstOn(host, n, reach, force) {
+    if (!host || reduced || (isM17() && !force)) return;
     var b = document.createElement('div'); b.className = 'burst';
     var m17 = isM17(), cols = m17 ? ['#261F8E', '#3F4EE3', '#A52226', '#00BD10', '#9FA8FF', '#232323'] : ['#FFB81C', '#FF3D8B', '#FFF1DC', '#FF7A1A', '#0F7A68', '#C8105A'], h = '<span class="flash"></span>';
     for (var i = 0; i < n; i++) {
@@ -940,24 +985,15 @@
     inp.focus();
     toast(message);
   }
-  // an Indian mobile number: 10 digits starting 6-9 (a pasted +91, 91 or 0 in front is dropped)
-  function cleanPhone(raw) {
-    var d = String(raw || '').replace(/\D/g, '');
-    if (d.length > 10) d = d.replace(/^(91|0)/, '');
-    return d;
-  }
   function participate() {
-    var inp = $('#gw-name'), ph = $('#gw-phone');
+    var inp = $('#gw-name'), ig = $('#gw-ig');
     var v = (inp.value || '').trim();
     S.name = v;
     if (v.length < 2) return fail(inp, 'Add your name so we know who to announce!');
-    S.phone = cleanPhone(ph.value);
-    if (!/^[6-9]\d{9}$/.test(S.phone)) return fail(ph, 'Enter a valid 10-digit mobile number.');
-    var ig = $('#gw-ig');
-    S.ig = cleanIg(ig ? ig.value : S.ig);
+    S.ig = cleanIg(ig.value);
+    if (!S.ig) return fail(ig, 'Add your Instagram handle so we can reach you if you win.');
     store('m17-garba-name', v);
-    store('m17-garba-phone', S.phone);
-    store('m17-garba-ig', S.ig || null);
+    store('m17-garba-ig', S.ig);
     enterGiveaway();
   }
   // an Instagram username: letters, digits, dots and underscores, up to 30 (a typed @ is dropped)
@@ -994,7 +1030,7 @@
   function onIgReturn() {
     if (!S.igOpenedAt || Date.now() - S.igOpenedAt < 1000) return;
     S.igOpenedAt = 0;
-    if (S.followed !== undefined || S.screen !== 'giveaway' || S.entered) return;
+    if (S.followed !== undefined || S.screen !== 'enter' || S.entered) return;
     openModal('follow');
   }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(onIgReturn, 300); });
@@ -1004,17 +1040,12 @@
     if (S.saving) return;
     S.saving = true;
     var btn = $('#participate'); if (btn) { btn.disabled = true; btn.firstChild.textContent = 'Saving…'; }
-    var body = { name: S.name.trim(), countryCode: '91', nationalNumber: S.phone, visitorId: visitorId() };
+    var shown = S.name.trim();
+    var name = CONFIG.handleInName ? shown.slice(0, Math.max(2, 60 - S.ig.length - 4)).trim() + ' · @' + S.ig : shown;
+    var body = { name: name, visitorId: visitorId(), instagramHandle: S.ig };
+    if (S.followed !== undefined) body.instagramFollowed = S.followed;
     if (S.source) body.source = S.source;
-    var extra = {};
-    if (S.ig) extra.instagramHandle = S.ig;
-    if (S.followed !== undefined) extra.instagramFollowed = S.followed;
-    var withExtra = Object.assign({}, body, extra);
-    api('POST', '/entry', withExtra).catch(function (e) {
-      // 400 = the backend rejected the new fields: never lose the entry over them
-      if (e && e.status === 400 && Object.keys(extra).length) return api('POST', '/entry', body);
-      throw e;
-    }).then(function (d) {
+    api('POST', '/entry', body).then(function (d) {
       S.saving = false;
       S.entered = true;
       S.entryNumber = d.entryNumber || '';
@@ -1025,8 +1056,8 @@
       S.saving = false;
       closeModal(true);
       var b2 = $('#participate'); if (b2) { b2.disabled = false; b2.firstChild.textContent = 'Participate Now'; }
-      // 409 = this phone number or this device is already in: say so instead of "check your connection"
-      toast(e && e.status === 409 ? e.message : 'Could not save your entry. Check your connection and try again.');
+      // 409 = this device is already in: say so instead of a generic error
+      toast(e && e.status === 409 ? e.message : 'Could not save your entry. Please try again in a moment.');
     });
   }
 
@@ -1045,7 +1076,7 @@
       '<h3 class="mini-title scr d2">What happens <span class="ser">next</span></h3>' +
       qaList([
         ['Keep following ' + CONFIG.instagramHandle, 'The winner is announced on our Instagram page.'],
-        ['Keep your phone close', 'We contact the winner on the mobile number you gave.']
+        ['Check your Instagram messages', 'We\'ll message the winner at @' + esc(S.ig || 'your handle') + '.']
       ]) +
       '<section class="cta-final scr d3">' +
         '<span class="cta-orn">' + LOGO + '</span>' +
@@ -1146,13 +1177,12 @@
   });
   document.addEventListener('input', function (e) {
     if (e.target.id === 'gw-name') { S.name = e.target.value; e.target.classList.remove('err'); }
-    if (e.target.id === 'gw-phone') { e.target.value = cleanPhone(e.target.value).slice(0, 10); S.phone = e.target.value; e.target.classList.remove('err'); }
-    if (e.target.id === 'gw-ig') { S.ig = e.target.value; }
+    if (e.target.id === 'gw-ig') { S.ig = e.target.value; e.target.classList.remove('err'); }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && S.modal) closeModal();
     if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('bot')) { e.preventDefault(); e.target.click(); }
-    if (e.key === 'Enter' && (e.target.id === 'gw-name' || e.target.id === 'gw-phone' || e.target.id === 'gw-ig')) { e.preventDefault(); participate(); }
+    if (e.key === 'Enter' && (e.target.id === 'gw-name' || e.target.id === 'gw-ig')) { e.preventDefault(); participate(); }
   });
 
   /* ---------- pinned top shadow ---------- */
